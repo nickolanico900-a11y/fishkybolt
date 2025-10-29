@@ -44,7 +44,7 @@ Deno.serve(async (req: Request) => {
       throw fetchError;
     }
 
-    if (!settings) {
+    if (!settings && action !== 'start_timer') {
       return new Response(
         JSON.stringify({ error: 'Settings not found' }),
         {
@@ -72,6 +72,32 @@ Deno.serve(async (req: Request) => {
       case 'start_timer': {
         const { days } = params;
         const newEndDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+
+        if (!settings) {
+          const { data: newSettings, error: insertError } = await supabase
+            .from('timer_settings')
+            .insert({
+              is_active: true,
+              end_date: newEndDate.toISOString(),
+              updated_at: new Date().toISOString(),
+              updated_by: 'admin',
+            })
+            .select()
+            .single();
+
+          if (insertError) {
+            throw insertError;
+          }
+
+          return new Response(
+            JSON.stringify({ success: true, data: newSettings }),
+            {
+              status: 200,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            }
+          );
+        }
+
         updateData.is_active = true;
         updateData.end_date = newEndDate.toISOString();
         break;

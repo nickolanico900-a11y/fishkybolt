@@ -87,8 +87,6 @@ export default function Admin() {
   };
 
   const startTimer = async (days: number) => {
-    if (!settings) return;
-
     try {
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/manage-timer`,
