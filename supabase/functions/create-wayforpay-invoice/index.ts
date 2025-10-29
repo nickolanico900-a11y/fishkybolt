@@ -1,5 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { HmacMD5 } from 'npm:crypto-js@4.2.0';
+import { createHmac } from 'node:crypto';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,8 +8,9 @@ const corsHeaders = {
 };
 
 function generateHmacMd5Signature(message: string, secretKey: string): string {
-  const hmac = HmacMD5(message, secretKey);
-  return hmac.toString();
+  const hmac = createHmac('md5', secretKey);
+  hmac.update(message);
+  return hmac.digest('hex');
 }
 
 interface InvoiceRequest {

@@ -1,5 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { HmacMD5 } from 'npm:crypto-js@4.2.0';
+import { createHmac } from 'node:crypto';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,8 +8,9 @@ const corsHeaders = {
 };
 
 function generateHmacMd5Signature(message: string, secretKey: string): string {
-  const hmac = HmacMD5(message, secretKey);
-  return hmac.toString();
+  const hmac = createHmac('md5', secretKey);
+  hmac.update(message);
+  return hmac.digest('hex');
 }
 
 Deno.serve(async (req: Request) => {
@@ -23,11 +24,9 @@ Deno.serve(async (req: Request) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const merchantAccount = Deno.env.get('WAYFORPAY_MERCHANT_ACCOUNT')!;
     const secretKey = Deno.env.get('WAYFORPAY_SECRET_KEY')!;
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
     const webhookData = await req.json();
 
     console.log('WayForPay webhook received:', JSON.stringify({
@@ -51,7 +50,17 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const signatureString = `${webhookData.merchantAccount};${webhookData.orderReference};${webhookData.amount};${webhookData.currency};${webhookData.authCode || ''};${webhookData.cardPan || ''};${webhookData.transactionStatus};${webhookData.reasonCode}`;
+    const signatureParts = [
+      webhookData.merchantAccount,
+      webhookData.orderReference,
+      webhookData.amount,
+      webhookData.currency,
+      webhookData.authCode || '',
+      webhookData.cardPan || '',
+      webhookData.transactionStatus,
+      webhookData.reasonCode
+    ];
+    const signatureString = signatureParts.join(';');
 
     const expectedSignature = generateHmacMd5Signature(signatureString, secretKey);
 
@@ -91,7 +100,7 @@ Deno.serve(async (req: Request) => {
         console.log('Order already completed (idempotency check):', orderReference);
 
         const responseTime = Math.floor(Date.now() / 1000);
-        const responseSignatureString = `${orderReference};accept;${responseTime}`;
+        const responseSignatureString = orderReference + ';accept;' + responseTime;
         const responseSignature = generateHmacMd5Signature(responseSignatureString, secretKey);
 
         return new Response(
@@ -161,7 +170,7 @@ Deno.serve(async (req: Request) => {
       });
 
       const responseTime = Math.floor(Date.now() / 1000);
-      const responseSignatureString = `${orderReference};accept;${responseTime}`;
+      const responseSignatureString = orderReference + ';accept;' + responseTime;
       const responseSignature = generateHmacMd5Signature(responseSignatureString, secretKey);
 
       return new Response(
@@ -186,10 +195,10 @@ Deno.serve(async (req: Request) => {
         })
         .eq('order_id', orderReference);
 
-      console.log(`Order ${orderReference} marked as ${webhookData.transactionStatus}`);
+      console.log('Order marked as ' + webhookData.transactionStatus + ': ' + orderReference);
 
       const responseTime = Math.floor(Date.now() / 1000);
-      const responseSignatureString = `${orderReference};accept;${responseTime}`;
+      const responseSignatureString = orderReference + ';accept;' + responseTime;
       const responseSignature = generateHmacMd5Signature(responseSignatureString, secretKey);
 
       return new Response(
@@ -207,7 +216,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const responseTime = Math.floor(Date.now() / 1000);
-    const responseSignatureString = `${orderReference};accept;${responseTime}`;
+    const responseSignatureString = orderReference + ';accept;' + responseTime;
     const responseSignature = generateHmacMd5Signature(responseSignatureString, secretKey);
 
     return new Response(
