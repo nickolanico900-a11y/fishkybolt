@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { HmacMD5 } from 'npm:crypto-js@4.2.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -6,24 +7,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey',
 };
 
-async function generateHmacMd5Signature(message: string, secretKey: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const keyData = encoder.encode(secretKey);
-  const msgData = encoder.encode(message);
-
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    keyData,
-    { name: 'HMAC', hash: { name: 'MD5' } },
-    false,
-    ['sign']
-  );
-
-  const signatureBuffer = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
-  const signatureArray = Array.from(new Uint8Array(signatureBuffer));
-  const signatureHex = signatureArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-  return signatureHex;
+function generateHmacMd5Signature(message: string, secretKey: string): string {
+  const hmac = HmacMD5(message, secretKey);
+  return hmac.toString();
 }
 
 interface InvoiceRequest {
@@ -93,7 +79,7 @@ Deno.serve(async (req: Request) => {
 
     console.log('Generating signature for WayForPay');
 
-    const signature = await generateHmacMd5Signature(signatureString, secretKey);
+    const signature = generateHmacMd5Signature(signatureString, secretKey);
 
     const wayforpayRequest = {
       transactionType: 'CREATE_INVOICE',

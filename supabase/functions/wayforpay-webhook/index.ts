@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { HmacMD5 } from 'npm:crypto-js@4.2.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -6,24 +7,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey',
 };
 
-async function generateHmacMd5Signature(message: string, secretKey: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const keyData = encoder.encode(secretKey);
-  const msgData = encoder.encode(message);
-
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    keyData,
-    { name: 'HMAC', hash: { name: 'MD5' } },
-    false,
-    ['sign']
-  );
-
-  const signature = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
-  const hashArray = Array.from(new Uint8Array(signature));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-  return hashHex;
+function generateHmacMd5Signature(message: string, secretKey: string): string {
+  const hmac = HmacMD5(message, secretKey);
+  return hmac.toString();
 }
 
 Deno.serve(async (req: Request) => {
@@ -67,7 +53,7 @@ Deno.serve(async (req: Request) => {
 
     const signatureString = `${webhookData.merchantAccount};${webhookData.orderReference};${webhookData.amount};${webhookData.currency};${webhookData.authCode || ''};${webhookData.cardPan || ''};${webhookData.transactionStatus};${webhookData.reasonCode}`;
 
-    const expectedSignature = await generateHmacMd5Signature(signatureString, secretKey);
+    const expectedSignature = generateHmacMd5Signature(signatureString, secretKey);
 
     if (webhookData.merchantSignature !== expectedSignature) {
       console.error('Invalid webhook signature:', {
@@ -106,7 +92,7 @@ Deno.serve(async (req: Request) => {
 
         const responseTime = Math.floor(Date.now() / 1000);
         const responseSignatureString = `${orderReference};accept;${responseTime}`;
-        const responseSignature = await generateHmacMd5Signature(responseSignatureString, secretKey);
+        const responseSignature = generateHmacMd5Signature(responseSignatureString, secretKey);
 
         return new Response(
           JSON.stringify({
@@ -176,7 +162,7 @@ Deno.serve(async (req: Request) => {
 
       const responseTime = Math.floor(Date.now() / 1000);
       const responseSignatureString = `${orderReference};accept;${responseTime}`;
-      const responseSignature = await generateHmacMd5Signature(responseSignatureString, secretKey);
+      const responseSignature = generateHmacMd5Signature(responseSignatureString, secretKey);
 
       return new Response(
         JSON.stringify({
@@ -204,7 +190,7 @@ Deno.serve(async (req: Request) => {
 
       const responseTime = Math.floor(Date.now() / 1000);
       const responseSignatureString = `${orderReference};accept;${responseTime}`;
-      const responseSignature = await generateHmacMd5Signature(responseSignatureString, secretKey);
+      const responseSignature = generateHmacMd5Signature(responseSignatureString, secretKey);
 
       return new Response(
         JSON.stringify({
@@ -222,7 +208,7 @@ Deno.serve(async (req: Request) => {
 
     const responseTime = Math.floor(Date.now() / 1000);
     const responseSignatureString = `${orderReference};accept;${responseTime}`;
-    const responseSignature = await generateHmacMd5Signature(responseSignatureString, secretKey);
+    const responseSignature = generateHmacMd5Signature(responseSignatureString, secretKey);
 
     return new Response(
       JSON.stringify({
