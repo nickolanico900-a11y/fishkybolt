@@ -19,13 +19,12 @@ async function generateHmacMd5Signature(message: string, secretKey: string): Pro
     ['sign']
   );
 
-  const signature = await crypto.subtle.sign('HMAC', cryptoKey, data);
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
   const hashArray = Array.from(new Uint8Array(signature));
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
   return hashHex;
 }
-
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
@@ -68,7 +67,7 @@ Deno.serve(async (req: Request) => {
 
     const signatureString = `${webhookData.merchantAccount};${webhookData.orderReference};${webhookData.amount};${webhookData.currency};${webhookData.authCode || ''};${webhookData.cardPan || ''};${webhookData.transactionStatus};${webhookData.reasonCode}`;
 
-    const expectedSignature = generateSignature(signatureString, secretKey);
+    const expectedSignature = await generateHmacMd5Signature(signatureString, secretKey);
 
     if (webhookData.merchantSignature !== expectedSignature) {
       console.error('Invalid webhook signature:', {
@@ -107,7 +106,7 @@ Deno.serve(async (req: Request) => {
 
         const responseTime = Math.floor(Date.now() / 1000);
         const responseSignatureString = `${orderReference};accept;${responseTime}`;
-        const responseSignature = await generateSignature(responseSignatureString, secretKey);
+        const responseSignature = await generateHmacMd5Signature(responseSignatureString, secretKey);
 
         return new Response(
           JSON.stringify({
@@ -124,16 +123,16 @@ Deno.serve(async (req: Request) => {
       }
 
       const entries = [];
-      for (let i = 0; i < order.sticker_count; i++) {
+      for (let i = 0; i < order.package_quantity; i++) {
         entries.push({
-          first_name: order.first_name,
-          last_name: order.last_name,
-          phone: order.phone,
-          email: order.email,
+          first_name: order.customer_email.split('@')[0],
+          last_name: order.customer_phone || 'N/A',
+          phone: order.customer_phone,
+          email: order.customer_email,
           package_name: order.package_name,
-          package_price: order.package_price,
+          package_price: Number(order.amount),
           order_id: orderReference,
-          payment_status: 'completed',
+          payment_status: 'paid',
           transaction_number: webhookData.transactionId || orderReference
         });
       }
@@ -158,7 +157,7 @@ Deno.serve(async (req: Request) => {
         .from('orders')
         .update({
           status: 'completed',
-          paid_at: new Date().toISOString()
+          updated_at: new Date().toISOString()
         })
         .eq('order_id', orderReference);
 
@@ -167,36 +166,6 @@ Deno.serve(async (req: Request) => {
       }
 
       const positions = insertedEntries.map(entry => entry.position_number);
-
-      try {
-        const emailResponse = await fetch(
-          `${supabaseUrl}/functions/v1/send-confirmation-email`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${supabaseServiceKey}`
-            },
-            body: JSON.stringify({
-              to: order.email,
-              firstName: order.first_name,
-              lastName: order.last_name,
-              packageName: order.package_name,
-              packagePrice: order.package_price,
-              positions: positions.sort((a, b) => a - b),
-              orderId: orderReference,
-              transactionNumber: webhookData.transactionId || orderReference,
-              siteUrl: 'https://avtodom-promo.com'
-            })
-          }
-        );
-
-        if (!emailResponse.ok) {
-          console.error('Failed to send confirmation email');
-        }
-      } catch (emailError) {
-        console.error('Error sending email:', emailError);
-      }
 
       console.log('Payment processed successfully:', {
         orderId: orderReference,
@@ -207,7 +176,7 @@ Deno.serve(async (req: Request) => {
 
       const responseTime = Math.floor(Date.now() / 1000);
       const responseSignatureString = `${orderReference};accept;${responseTime}`;
-      const responseSignature = await generateSignature(responseSignatureString, secretKey);
+      const responseSignature = await generateHmacMd5Signature(responseSignatureString, secretKey);
 
       return new Response(
         JSON.stringify({
@@ -226,7 +195,8 @@ Deno.serve(async (req: Request) => {
         .from('orders')
         .update({
           status: webhookData.transactionStatus.toLowerCase(),
-          error_message: webhookData.reason || 'Payment declined or expired'
+          error_message: webhookData.reason || 'Payment declined or expired',
+          updated_at: new Date().toISOString()
         })
         .eq('order_id', orderReference);
 
@@ -234,7 +204,7 @@ Deno.serve(async (req: Request) => {
 
       const responseTime = Math.floor(Date.now() / 1000);
       const responseSignatureString = `${orderReference};accept;${responseTime}`;
-      const responseSignature = await generateSignature(responseSignatureString, secretKey);
+      const responseSignature = await generateHmacMd5Signature(responseSignatureString, secretKey);
 
       return new Response(
         JSON.stringify({
@@ -252,7 +222,7 @@ Deno.serve(async (req: Request) => {
 
     const responseTime = Math.floor(Date.now() / 1000);
     const responseSignatureString = `${orderReference};accept;${responseTime}`;
-    const responseSignature = await generateSignature(responseSignatureString, secretKey);
+    const responseSignature = await generateHmacMd5Signature(responseSignatureString, secretKey);
 
     return new Response(
       JSON.stringify({

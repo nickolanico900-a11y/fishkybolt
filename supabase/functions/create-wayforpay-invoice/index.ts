@@ -6,41 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey',
 };
 
-async function generateSignature(signatureString: string, secretKey: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(signatureString);
-  const keyData = encoder.encode(secretKey);
-
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    keyData,
-    { name: 'HMAC', hash: { name: 'MD5' } },
-    false,
-    ['sign']
-  );
-
-  const signature = await crypto.subtle.sign('HMAC', cryptoKey, data);
-  const hashArray = Array.from(new Uint8Array(signature));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-  return hashHex;
-}
-
-interface InvoiceRequest {
-  amount: number;
-  orderReference: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  packageName: string;
-  redirectUrl: string;
-  webHookUrl: string;
-  firstName: string;
-  lastName: string;
-  packagePrice: number;
-  stickerCount: number;
-}
-
 async function generateHmacMd5Signature(message: string, secretKey: string): Promise<string> {
   const encoder = new TextEncoder();
   const keyData = encoder.encode(secretKey);
@@ -61,6 +26,20 @@ async function generateHmacMd5Signature(message: string, secretKey: string): Pro
   return signatureHex;
 }
 
+interface InvoiceRequest {
+  amount: number;
+  orderReference: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  packageName: string;
+  redirectUrl: string;
+  webHookUrl: string;
+  firstName: string;
+  lastName: string;
+  packagePrice: number;
+  stickerCount: number;
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
@@ -83,15 +62,14 @@ Deno.serve(async (req: Request) => {
       .from('orders')
       .insert({
         order_id: body.orderReference,
-        first_name: body.firstName,
-        last_name: body.lastName,
-        phone: body.customerPhone,
-        email: body.customerEmail,
+        customer_email: body.customerEmail,
+        customer_phone: body.customerPhone,
         package_name: body.packageName,
-        package_price: body.packagePrice,
-        sticker_count: body.stickerCount,
-        amount: body.amount,
-        status: 'awaiting_payment'
+        package_quantity: body.stickerCount,
+        amount: body.amount / 100,
+        currency: 'UAH',
+        status: 'pending',
+        payment_method: 'wayforpay'
       });
 
     if (orderError) {
@@ -105,7 +83,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log('Attempting to create WayForPay invoice for order:', body.orderReference);
+    console.log('Order created successfully:', body.orderReference);
 
     const orderDate = Math.floor(Date.now() / 1000);
     const amountInGrn = body.amount / 100;
@@ -113,10 +91,9 @@ Deno.serve(async (req: Request) => {
     const merchantDomainName = new URL(body.redirectUrl).hostname;
     const signatureString = `${merchantAccount};${merchantDomainName};${body.orderReference};${orderDate};${amountInGrn};UAH;${body.packageName};1;${amountInGrn}`;
 
-    console.log('Signature string (without secret):', signatureString);
+    console.log('Generating signature for WayForPay');
 
-    const signature = await generateSignature(signatureString, secretKey);
-    console.log('Generated signature length:', signature.length);
+    const signature = await generateHmacMd5Signature(signatureString, secretKey);
 
     const wayforpayRequest = {
       transactionType: 'CREATE_INVOICE',
@@ -140,7 +117,7 @@ Deno.serve(async (req: Request) => {
       apiVersion: 1
     };
 
-    console.log('WayForPay request:', JSON.stringify({ ...wayforpayRequest, merchantSignature: '[REDACTED]' }));
+    console.log('Sending request to WayForPay API');
 
     const wayforpayResponse = await fetch('https://api.wayforpay.com/api', {
       method: 'POST',
@@ -165,7 +142,8 @@ Deno.serve(async (req: Request) => {
         .from('orders')
         .update({
           status: 'failed',
-          error_message: `WayForPay API error: ${wayforpayResponse.status} - ${errorText}`
+          error_message: `WayForPay API error: ${wayforpayResponse.status} - ${errorText}`,
+          updated_at: new Date().toISOString()
         })
         .eq('order_id', body.orderReference);
 
@@ -183,7 +161,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const invoiceData = await wayforpayResponse.json();
-    console.log('WayForPay invoice created successfully:', {
+    console.log('WayForPay invoice created:', {
       orderReference: body.orderReference,
       reason: invoiceData.reason,
       reasonCode: invoiceData.reasonCode,
@@ -197,7 +175,8 @@ Deno.serve(async (req: Request) => {
         .from('orders')
         .update({
           status: 'failed',
-          error_message: `WayForPay error: ${invoiceData.reason}`
+          error_message: `WayForPay error: ${invoiceData.reason}`,
+          updated_at: new Date().toISOString()
         })
         .eq('order_id', body.orderReference);
 
@@ -221,7 +200,8 @@ Deno.serve(async (req: Request) => {
         .from('orders')
         .update({
           status: 'failed',
-          error_message: 'WayForPay не повернув посилання для оплати'
+          error_message: 'WayForPay не повернув посилання для оплати',
+          updated_at: new Date().toISOString()
         })
         .eq('order_id', body.orderReference);
 
@@ -239,10 +219,13 @@ Deno.serve(async (req: Request) => {
 
     await supabase
       .from('orders')
-      .update({ invoice_id: body.orderReference })
+      .update({
+        status: 'awaiting_payment',
+        updated_at: new Date().toISOString()
+      })
       .eq('order_id', body.orderReference);
 
-    console.log('Returning payment URL to client for order:', body.orderReference);
+    console.log('Returning payment URL to client');
 
     return new Response(
       JSON.stringify({
