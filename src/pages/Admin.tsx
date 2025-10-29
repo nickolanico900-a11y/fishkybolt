@@ -315,6 +315,39 @@ export default function Admin() {
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
             </div>
+          ) : !settings ? (
+            <>
+              {/* Таймер не створено - показуємо лише кнопку старту */}
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-8 mb-8 text-center">
+                <div className="mb-6">
+                  <Clock className="w-16 h-16 text-green-600 mx-auto mb-4" />
+                  <h2 className="text-3xl font-bold text-gray-800 mb-2">Таймер ще не створено</h2>
+                  <p className="text-gray-600 text-lg">
+                    Створіть таймер щоб розпочати акцію та приймати оплати
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-xl p-6 max-w-md mx-auto">
+                  <label className="block text-gray-700 mb-3 font-semibold text-lg">
+                    Тривалість акції (днів):
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={newDuration}
+                    onChange={(e) => setNewDuration(Number(e.target.value))}
+                    className="w-full px-6 py-4 text-2xl font-bold text-center border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none mb-4"
+                  />
+                  <button
+                    onClick={() => startTimer(newDuration)}
+                    className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-4 px-8 rounded-lg font-bold text-xl transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
+                  >
+                    <Play className="w-7 h-7" />
+                    Запустити таймер на {newDuration} {newDuration === 1 ? 'день' : newDuration < 5 ? 'дні' : 'днів'}
+                  </button>
+                </div>
+              </div>
+            </>
           ) : settings ? (
             <>
               {/* Поточний стан */}
@@ -482,9 +515,7 @@ export default function Admin() {
                 </button>
               </div>
             </>
-          ) : (
-            <p className="text-center text-gray-600">Налаштування не знайдено</p>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
