@@ -19,6 +19,7 @@ interface InvoiceRequest {
   lastName: string;
   packagePrice: number;
   stickerCount: number;
+  productToCount: boolean;
 }
 
 Deno.serve(async (req: Request) => {
@@ -48,7 +49,8 @@ Deno.serve(async (req: Request) => {
         amount: body.amount / 100,
         currency: 'UAH',
         status: 'pending',
-        payment_method: 'monobank'
+        payment_method: 'monobank',
+        product_to_count: body.productToCount
       });
 
     if (orderError) {

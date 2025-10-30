@@ -95,12 +95,12 @@ Deno.serve(async (req: Request) => {
         order: {
           orderId: order.order_id,
           status: order.status,
-          firstName: order.first_name,
-          lastName: order.last_name,
-          email: order.email,
+          firstName: order.first_name || 'N/A',
+          lastName: order.last_name || 'N/A',
+          email: order.customer_email,
           packageName: order.package_name,
-          packagePrice: order.package_price,
-          stickerCount: order.sticker_count,
+          packagePrice: order.amount,
+          stickerCount: order.package_quantity,
           transactionNumber: order.invoice_id,
           createdAt: order.created_at,
           paidAt: order.paid_at

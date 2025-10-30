@@ -2,7 +2,7 @@ import { ShoppingCart } from 'lucide-react';
 import Countdown from './Countdown';
 
 interface StickerPacksProps {
-  onSelectPackage: (pack: { name: string; price: number; stickers: number }) => void;
+  onSelectPackage: (pack: { name: string; price: number; stickers: number; productToCount: boolean }) => void;
 }
 
 interface StickerPack {
@@ -158,7 +158,8 @@ export default function StickerPacks({ onSelectPackage }: StickerPacksProps) {
     onSelectPackage({
       name: pack.name,
       price: pack.price,
-      stickers: totalStickers
+      stickers: totalStickers,
+      productToCount: pack.productToCount
     });
   };
 

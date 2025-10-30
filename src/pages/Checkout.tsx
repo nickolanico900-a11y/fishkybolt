@@ -9,6 +9,7 @@ export default function Checkout() {
   const packageName = searchParams.get('package') || '';
   const packagePrice = parseInt(searchParams.get('price') || '0');
   const stickerCount = parseInt(searchParams.get('stickers') || '0');
+  const productToCount = searchParams.get('productToCount') === 'true';
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -73,7 +74,8 @@ export default function Checkout() {
             firstName: formData.firstName,
             lastName: formData.lastName,
             packagePrice: packagePrice,
-            stickerCount: stickerCount
+            stickerCount: stickerCount,
+            productToCount: productToCount
           })
         }
       );

@@ -10,6 +10,7 @@ interface ContactProps {
     price: number;
     stickers: number;
     bonus?: number;
+    productToCount?: boolean;
   } | null;
   onClearPackage?: () => void;
   isRaffleProduct?: boolean;
@@ -119,7 +120,8 @@ export default function Contact({ onOpenPrivacy, onOpenOffer, selectedPackage, o
             firstName: formData.name,
             lastName: formData.surname,
             packagePrice: selectedPackage.price,
-            stickerCount: selectedPackage.stickers + (selectedPackage.bonus || 0)
+            stickerCount: selectedPackage.stickers + (selectedPackage.bonus || 0),
+            productToCount: selectedPackage.productToCount || false
           })
         }
       );

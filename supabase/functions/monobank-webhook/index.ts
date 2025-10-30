@@ -72,43 +72,43 @@ Deno.serve(async (req: Request) => {
         );
       }
 
-      if (order.invoice_id && order.invoice_id !== invoiceId) {
-        console.warn('Invoice ID mismatch:', {
-          expected: order.invoice_id,
-          received: invoiceId,
-          orderId: orderReference
-        });
-      }
+      let insertedEntries = [];
+      let positions = [];
 
-      const entries = [];
-      for (let i = 0; i < order.sticker_count; i++) {
-        entries.push({
-          first_name: order.first_name,
-          last_name: order.last_name,
-          phone: order.phone,
-          email: order.email,
-          package_name: order.package_name,
-          package_price: order.package_price,
-          order_id: orderReference,
-          payment_status: 'completed',
-          transaction_number: invoiceId
-        });
-      }
+      if (order.product_to_count) {
+        const entries = [];
+        for (let i = 0; i < order.package_quantity; i++) {
+          entries.push({
+            first_name: order.first_name || 'N/A',
+            last_name: order.last_name || 'N/A',
+            phone: order.customer_phone,
+            email: order.customer_email,
+            package_name: order.package_name,
+            package_price: order.amount,
+            order_id: orderReference,
+            payment_status: 'completed',
+            transaction_number: invoiceId
+          });
+        }
 
-      const { data: insertedEntries, error: entriesError } = await supabase
-        .from('sticker_entries')
-        .insert(entries)
-        .select('position_number');
+        const { data: entries_data, error: entriesError } = await supabase
+          .from('sticker_entries')
+          .insert(entries)
+          .select('position_number');
 
-      if (entriesError) {
-        console.error('Error creating sticker entries:', entriesError);
-        return new Response(
-          JSON.stringify({ error: 'Failed to create entries' }),
-          {
-            status: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          }
-        );
+        if (entriesError) {
+          console.error('Error creating sticker entries:', entriesError);
+          return new Response(
+            JSON.stringify({ error: 'Failed to create entries' }),
+            {
+              status: 500,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            }
+          );
+        }
+
+        insertedEntries = entries_data || [];
+        positions = insertedEntries.map(entry => entry.position_number);
       }
 
       const { error: updateOrderError } = await supabase
@@ -123,36 +123,36 @@ Deno.serve(async (req: Request) => {
         console.error('Error updating order status:', updateOrderError);
       }
 
-      const positions = insertedEntries.map(entry => entry.position_number);
+      if (order.product_to_count && positions.length > 0) {
+        try {
+          const emailResponse = await fetch(
+            `${supabaseUrl}/functions/v1/send-confirmation-email`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${supabaseServiceKey}`
+              },
+              body: JSON.stringify({
+                to: order.customer_email,
+                firstName: order.first_name || 'Клієнт',
+                lastName: order.last_name || '',
+                packageName: order.package_name,
+                packagePrice: order.amount,
+                positions: positions.sort((a, b) => a - b),
+                orderId: orderReference,
+                transactionNumber: invoiceId,
+                siteUrl: 'https://avtodom-promo.com'
+              })
+            }
+          );
 
-      try {
-        const emailResponse = await fetch(
-          `${supabaseUrl}/functions/v1/send-confirmation-email`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${supabaseServiceKey}`
-            },
-            body: JSON.stringify({
-              to: order.email,
-              firstName: order.first_name,
-              lastName: order.last_name,
-              packageName: order.package_name,
-              packagePrice: order.package_price,
-              positions: positions.sort((a, b) => a - b),
-              orderId: orderReference,
-              transactionNumber: invoiceId,
-              siteUrl: 'https://avtodom-promo.com'
-            })
+          if (!emailResponse.ok) {
+            console.error('Failed to send confirmation email');
           }
-        );
-
-        if (!emailResponse.ok) {
-          console.error('Failed to send confirmation email');
+        } catch (emailError) {
+          console.error('Error sending email:', emailError);
         }
-      } catch (emailError) {
-        console.error('Error sending email:', emailError);
       }
 
       console.log('Payment processed successfully:', {

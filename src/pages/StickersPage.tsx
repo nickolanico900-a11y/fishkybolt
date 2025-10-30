@@ -9,9 +9,10 @@ export default function StickersPage() {
     name: string;
     price: number;
     stickers: number;
+    productToCount: boolean;
   } | null>(null);
 
-  const handleSelectPackage = (pack: { name: string; price: number; stickers: number }) => {
+  const handleSelectPackage = (pack: { name: string; price: number; stickers: number; productToCount: boolean }) => {
     setSelectedPackage(pack);
     contactRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
