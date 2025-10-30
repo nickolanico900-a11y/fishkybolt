@@ -11,6 +11,7 @@ interface StickerPack {
   stickers: number;
   price: number;
   bonus: number;
+  productToCount: boolean,
   carImage?: string;
   isPhysical?: boolean;
   description?: string;
