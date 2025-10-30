@@ -97,10 +97,10 @@ export default function Contact({ onOpenPrivacy, onOpenOffer, selectedPackage, o
 
       const currentUrl = window.location.origin;
       const redirectUrl = `${currentUrl}/success?orderId=${newOrderId}`;
-      const webHookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wayforpay-webhook`;
+      const webHookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/monobank-webhook`;
 
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-wayforpay-invoice`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-monobank-invoice`,
         {
           method: 'POST',
           headers: {
@@ -142,7 +142,7 @@ export default function Contact({ onOpenPrivacy, onOpenOffer, selectedPackage, o
         throw new Error(errorMsg);
       }
 
-      console.log('Redirecting to WayForPay payment page...');
+      console.log('Redirecting to Monobank payment page...');
       await new Promise(resolve => setTimeout(resolve, 500));
       window.location.href = invoiceData.pageUrl;
     } catch (error) {
