@@ -128,6 +128,17 @@ const packs: StickerPack[] = [
     description: '6х7 см наліпка',
   },
   {
+    id: 'product-91',
+    name: 'Наліпка тестова 6шт',
+    stickers: 1,
+    price: 99,
+    bonus: 5,
+    productToCount,
+    carImage: 'https://i.ibb.co/ksMnP6Hg/base11.png',
+    isPhysical: true,
+    description: '6х7 см наліпка',
+  },
+  {
     id: 'product-10',
     name: 'Наліпка',
     stickers: 1,
