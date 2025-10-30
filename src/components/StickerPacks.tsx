@@ -89,6 +89,7 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 0,
+    productToCount,
     carImage: 'https://i.ibb.co/8g4nJY5R/base8.png',
     isPhysical: true,
     description: '6х7 см наліпка',
