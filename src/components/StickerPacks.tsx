@@ -34,6 +34,7 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 20,
     bonus: 0,
+    productToCount,
     carImage: 'https://i.ibb.co/93n5TsSP/2.png',
     isPhysical: true,
     description: 'тест продукт'
