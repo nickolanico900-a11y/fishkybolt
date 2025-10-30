@@ -43,7 +43,7 @@ export default function Checkout() {
 
       const currentUrl = window.location.origin;
       const redirectUrl = `${currentUrl}/success?orderId=${orderId}`;
-      const webHookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wayforpay-webhook`;
+      const webHookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/monobank-webhook`;
 
       sessionStorage.setItem('pendingOrder', JSON.stringify({
         ...formData,
@@ -54,7 +54,7 @@ export default function Checkout() {
       }));
 
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-wayforpay-invoice`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-monobank-invoice`,
         {
           method: 'POST',
           headers: {
@@ -301,7 +301,7 @@ export default function Checkout() {
               </div>
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${paymentProgress >= 60 ? 'bg-green-500' : 'bg-gray-300'}`} />
-                <span>Створення рахунку WayForPay</span>
+                <span>Створення рахунку Monobank</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${paymentProgress >= 90 ? 'bg-green-500' : 'bg-gray-300'}`} />

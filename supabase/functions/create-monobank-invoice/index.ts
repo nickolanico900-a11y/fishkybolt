@@ -41,15 +41,14 @@ Deno.serve(async (req: Request) => {
       .from('orders')
       .insert({
         order_id: body.orderReference,
-        first_name: body.firstName,
-        last_name: body.lastName,
-        phone: body.customerPhone,
-        email: body.customerEmail,
+        customer_email: body.customerEmail,
+        customer_phone: body.customerPhone,
         package_name: body.packageName,
-        package_price: body.packagePrice,
-        sticker_count: body.stickerCount,
-        amount: body.amount,
-        status: 'awaiting_payment'
+        package_quantity: body.stickerCount,
+        amount: body.amount / 100,
+        currency: 'UAH',
+        status: 'pending',
+        payment_method: 'monobank'
       });
 
     if (orderError) {
@@ -114,7 +113,8 @@ Deno.serve(async (req: Request) => {
         .from('orders')
         .update({
           status: 'failed',
-          error_message: `Monobank API error: ${monoResponse.status} - ${errorText}`
+          error_message: `Monobank API error: ${monoResponse.status} - ${errorText}`,
+          updated_at: new Date().toISOString()
         })
         .eq('order_id', body.orderReference);
 
@@ -145,7 +145,8 @@ Deno.serve(async (req: Request) => {
         .from('orders')
         .update({
           status: 'failed',
-          error_message: 'Monobank не повернув посилання для оплати'
+          error_message: 'Monobank не повернув посилання для оплати',
+          updated_at: new Date().toISOString()
         })
         .eq('order_id', body.orderReference);
 
@@ -161,12 +162,13 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    if (invoiceData.invoiceId) {
-      await supabase
-        .from('orders')
-        .update({ invoice_id: invoiceData.invoiceId })
-        .eq('order_id', body.orderReference);
-    }
+    await supabase
+      .from('orders')
+      .update({
+        status: 'awaiting_payment',
+        updated_at: new Date().toISOString()
+      })
+      .eq('order_id', body.orderReference);
 
     console.log('Returning payment URL to client for order:', body.orderReference);
 
