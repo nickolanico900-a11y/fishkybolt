@@ -23,7 +23,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 0,
-    productToCount,
     carImage: 'https://i.ibb.co/93n5TsSP/2.png',
     isPhysical: true,
     description: '6х7 см наліпка'
@@ -34,7 +33,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 20,
     bonus: 0,
-    productToCount,
     carImage: 'https://i.ibb.co/93n5TsSP/2.png',
     isPhysical: true,
     description: 'тест продукт'
@@ -45,7 +43,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 0,
-    productToCount,
     carImage: 'https://i.ibb.co/9kpbcN0P/base3.png',
     isPhysical: true,
     description: '6х7 см наліпка'
@@ -56,7 +53,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 0,
-    productToCount,
     carImage: 'https://i.ibb.co/pj1bzCQ6/base4.png',
     isPhysical: true,
     description: '6х7 см наліпка'
@@ -67,7 +63,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 0,
-    productToCount,
     carImage: 'https://i.ibb.co/Xfdjh7VV/base5.png',
     isPhysical: true,
     description: '6х7 см наліпка'
@@ -78,7 +73,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 0,
-    productToCount,
     carImage: 'https://i.ibb.co/nNw9f5vz/base6.png',
     isPhysical: true,
     description: '6х7 см наліпка'
@@ -89,7 +83,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 0,
-    productToCount,
     carImage: 'https://i.ibb.co/8g4nJY5R/base8.png',
     isPhysical: true,
     description: '6х7 см наліпка',
@@ -100,7 +93,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 0,
-    productToCount,
     carImage: 'https://i.ibb.co/F44PQ6yn/base9.png',
     isPhysical: true,
     description: '6х7 см наліпка',
@@ -111,7 +103,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 0,
-    productToCount,
     carImage: 'https://i.ibb.co/dJ3x8bpK/base10.png',
     isPhysical: true,
     description: '6х7 см наліпка'
@@ -122,7 +113,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 5,
-    productToCount,
     carImage: 'https://i.ibb.co/ksMnP6Hg/base11.png',
     isPhysical: true,
     description: '6х7 см наліпка',
@@ -133,7 +123,6 @@ const packs: StickerPack[] = [
     stickers: 1,
     price: 99,
     bonus: 2,
-    productToCount,
     carImage: 'https://i.ibb.co/jvXm58dk/base12.png',
     isPhysical: true,
     description: '6х7 см наліпка'

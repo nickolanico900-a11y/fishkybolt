@@ -15,7 +15,7 @@ interface ContactProps {
   isRaffleProduct?: boolean;
 }
 
-export default function Contact({ onOpenPrivacy, onOpenOffer, selectedPackage, onClearPackage, isRaffleProduct = false }: ContactProps) {
+export default function Contact({ onOpenPrivacy, onOpenOffer, selectedPackage, onClearPackage }: ContactProps) {
   const [formData, setFormData] = useState({
     name: '',
     surname: '',
@@ -27,8 +27,6 @@ export default function Contact({ onOpenPrivacy, onOpenOffer, selectedPackage, o
   const [showPaymentSimulation, setShowPaymentSimulation] = useState(false);
   const [paymentProgress, setPaymentProgress] = useState(0);
   const [orderComplete, setOrderComplete] = useState(false);
-  const [positions, setPositions] = useState<number[]>([]);
-  const [orderId, setOrderId] = useState('');
   const [showInactiveModal, setShowInactiveModal] = useState(false);
 
   useEffect(() => {
@@ -169,8 +167,6 @@ export default function Contact({ onOpenPrivacy, onOpenOffer, selectedPackage, o
 
   const handleReset = () => {
     setOrderComplete(false);
-    setPositions([]);
-    setOrderId('');
     setFormData({
       name: '',
       surname: '',
