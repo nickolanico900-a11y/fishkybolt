@@ -124,7 +124,37 @@ Deno.serve(async (req: Request) => {
       }
 
       if (order.product_to_count && positions.length > 0) {
+        console.log('Waiting 3 seconds for database triggers to complete...');
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
         try {
+          const { data: entriesFromDb, error: entriesQueryError } = await supabase
+            .from('sticker_entries')
+            .select('*')
+            .eq('order_id', orderReference)
+            .order('position_number', { ascending: true });
+
+          if (entriesQueryError) {
+            console.error('Error fetching entries from database:', entriesQueryError);
+            throw entriesQueryError;
+          }
+
+          if (!entriesFromDb || entriesFromDb.length === 0) {
+            console.error('No entries found in database after payment for order:', orderReference);
+            return new Response(
+              JSON.stringify({ error: 'Entries not found after payment' }),
+              {
+                status: 500,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              }
+            );
+          }
+
+          console.log(`Found ${entriesFromDb.length} entries in database for order ${orderReference}`);
+
+          const positionsFromDb = entriesFromDb.map(e => e.position_number);
+          const firstEntry = entriesFromDb[0];
+
           const emailResponse = await fetch(
             `${supabaseUrl}/functions/v1/send-confirmation-email`,
             {
@@ -134,12 +164,12 @@ Deno.serve(async (req: Request) => {
                 'Authorization': `Bearer ${supabaseServiceKey}`
               },
               body: JSON.stringify({
-                to: order.customer_email,
-                firstName: order.first_name || 'Клієнт',
-                lastName: order.last_name || '',
-                packageName: order.package_name,
-                packagePrice: order.amount,
-                positions: positions.sort((a, b) => a - b),
+                to: firstEntry.email,
+                firstName: firstEntry.first_name,
+                lastName: firstEntry.last_name,
+                packageName: firstEntry.package_name,
+                packagePrice: firstEntry.package_price,
+                positions: positionsFromDb,
                 orderId: orderReference,
                 transactionNumber: invoiceId,
                 siteUrl: 'https://avtodom-promo.com'
@@ -148,10 +178,13 @@ Deno.serve(async (req: Request) => {
           );
 
           if (!emailResponse.ok) {
-            console.error('Failed to send confirmation email');
+            const errorText = await emailResponse.text();
+            console.error('Failed to send confirmation email:', errorText);
+          } else {
+            console.log('Confirmation email sent successfully for order:', orderReference);
           }
         } catch (emailError) {
-          console.error('Error sending email:', emailError);
+          console.error('Error in email sending process:', emailError);
         }
       }
 

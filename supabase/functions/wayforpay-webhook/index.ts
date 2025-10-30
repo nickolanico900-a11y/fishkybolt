@@ -117,41 +117,53 @@ Deno.serve(async (req: Request) => {
         );
       }
 
-      const entries = [];
-      for (let i = 0; i < order.package_quantity; i++) {
-        entries.push({
-          first_name: order.customer_email.split('@')[0],
-          last_name: order.customer_phone || 'N/A',
-          phone: order.customer_phone,
-          email: order.customer_email,
-          package_name: order.package_name,
-          package_price: Number(order.amount),
-          order_id: orderReference,
-          payment_status: 'paid',
-          transaction_number: webhookData.transactionId || orderReference
+      if (order.product_to_count) {
+        const entries = [];
+        for (let i = 0; i < order.package_quantity; i++) {
+          entries.push({
+            first_name: order.first_name || 'N/A',
+            last_name: order.last_name || 'N/A',
+            phone: order.customer_phone,
+            email: order.customer_email,
+            package_name: order.package_name,
+            package_price: Number(order.amount),
+            order_id: orderReference,
+            payment_status: 'completed',
+            transaction_number: webhookData.transactionId || orderReference
+          });
+        }
+
+        const { data: insertedEntries, error: entriesError } = await supabase
+          .from('sticker_entries')
+          .insert(entries)
+          .select('position_number');
+
+        if (entriesError) {
+          console.error('Error creating sticker entries:', entriesError);
+          return new Response(
+            JSON.stringify({ error: 'Failed to create entries' }),
+            {
+              status: 500,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            }
+          );
+        }
+
+        const positions = insertedEntries.map(entry => entry.position_number);
+
+        console.log('Payment processed successfully:', {
+          orderId: orderReference,
+          transactionId: webhookData.transactionId,
+          entriesCreated: insertedEntries.length,
+          positions: positions.sort((a, b) => a - b)
         });
-      }
-
-      const { data: insertedEntries, error: entriesError } = await supabase
-        .from('sticker_entries')
-        .insert(entries)
-        .select('position_number');
-
-      if (entriesError) {
-        console.error('Error creating sticker entries:', entriesError);
-        return new Response(
-          JSON.stringify({ error: 'Failed to create entries' }),
-          {
-            status: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          }
-        );
       }
 
       const { error: updateOrderError } = await supabase
         .from('orders')
         .update({
           status: 'completed',
+          paid_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
         .eq('order_id', orderReference);
@@ -160,14 +172,63 @@ Deno.serve(async (req: Request) => {
         console.error('Error updating order status:', updateOrderError);
       }
 
-      const positions = insertedEntries.map(entry => entry.position_number);
+      if (order.product_to_count) {
+        console.log('Waiting 3 seconds for database triggers to complete...');
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
-      console.log('Payment processed successfully:', {
-        orderId: orderReference,
-        transactionId: webhookData.transactionId,
-        entriesCreated: insertedEntries.length,
-        positions: positions.sort((a, b) => a - b)
-      });
+        try {
+          const { data: entriesFromDb, error: entriesQueryError } = await supabase
+            .from('sticker_entries')
+            .select('*')
+            .eq('order_id', orderReference)
+            .order('position_number', { ascending: true });
+
+          if (entriesQueryError) {
+            console.error('Error fetching entries from database:', entriesQueryError);
+            throw entriesQueryError;
+          }
+
+          if (!entriesFromDb || entriesFromDb.length === 0) {
+            console.error('No entries found in database after payment for order:', orderReference);
+          } else {
+            console.log(`Found ${entriesFromDb.length} entries in database for order ${orderReference}`);
+
+            const positionsFromDb = entriesFromDb.map(e => e.position_number);
+            const firstEntry = entriesFromDb[0];
+
+            const emailResponse = await fetch(
+              `${supabaseUrl}/functions/v1/send-confirmation-email`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${supabaseServiceKey}`
+                },
+                body: JSON.stringify({
+                  to: firstEntry.email,
+                  firstName: firstEntry.first_name,
+                  lastName: firstEntry.last_name,
+                  packageName: firstEntry.package_name,
+                  packagePrice: firstEntry.package_price,
+                  positions: positionsFromDb,
+                  orderId: orderReference,
+                  transactionNumber: webhookData.transactionId || orderReference,
+                  siteUrl: 'https://avtodom-promo.com'
+                })
+              }
+            );
+
+            if (!emailResponse.ok) {
+              const errorText = await emailResponse.text();
+              console.error('Failed to send confirmation email:', errorText);
+            } else {
+              console.log('Confirmation email sent successfully for order:', orderReference);
+            }
+          }
+        } catch (emailError) {
+          console.error('Error in email sending process:', emailError);
+        }
+      }
 
       const responseTime = Math.floor(Date.now() / 1000);
       const responseSignatureString = orderReference + ';accept;' + responseTime;

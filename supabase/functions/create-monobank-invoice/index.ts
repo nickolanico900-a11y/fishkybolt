@@ -42,6 +42,8 @@ Deno.serve(async (req: Request) => {
       .from('orders')
       .insert({
         order_id: body.orderReference,
+        first_name: body.firstName,
+        last_name: body.lastName,
         customer_email: body.customerEmail,
         customer_phone: body.customerPhone,
         package_name: body.packageName,

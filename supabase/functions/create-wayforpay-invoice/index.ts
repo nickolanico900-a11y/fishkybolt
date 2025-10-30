@@ -26,6 +26,7 @@ interface InvoiceRequest {
   lastName: string;
   packagePrice: number;
   stickerCount: number;
+  productToCount: boolean;
 }
 
 Deno.serve(async (req: Request) => {
@@ -49,6 +50,8 @@ Deno.serve(async (req: Request) => {
       .from('orders')
       .insert({
         order_id: body.orderReference,
+        first_name: body.firstName,
+        last_name: body.lastName,
         customer_email: body.customerEmail,
         customer_phone: body.customerPhone,
         package_name: body.packageName,
@@ -56,7 +59,8 @@ Deno.serve(async (req: Request) => {
         amount: body.amount / 100,
         currency: 'UAH',
         status: 'pending',
-        payment_method: 'wayforpay'
+        payment_method: 'wayforpay',
+        product_to_count: body.productToCount
       });
 
     if (orderError) {
