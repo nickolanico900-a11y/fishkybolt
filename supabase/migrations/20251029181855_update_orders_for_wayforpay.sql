@@ -1,13 +1,13 @@
 /*
-  # Update orders table for WayForPay integration
+  # Update orders table for Monobank integration
 
   1. Changes
-    - Update any existing references to support WayForPay
-    - The invoice_id column will now store WayForPay transaction references
-    - Status values remain compatible: awaiting_payment, completed, failed, cancelled, declined, expired
+    - Update any existing references to support Monobank
+    - The invoice_id column will now store Monobank transaction references
+    - Status values remain compatible: awaiting_payment, completed, failed, cancelled
 
   2. Notes
-    - WayForPay uses different status names (Approved, Declined, Expired)
+    - Monobank uses different status names (success, failure, cancelled)
     - These will be mapped to our existing status values in the webhook handler
     - No schema changes needed - existing structure is compatible
 */
@@ -16,14 +16,14 @@
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_indexes 
+    SELECT 1 FROM pg_indexes
     WHERE indexname = 'idx_orders_email'
   ) THEN
-    CREATE INDEX idx_orders_email ON orders(email);
+    CREATE INDEX idx_orders_email ON orders(customer_email);
   END IF;
-  
+
   IF NOT EXISTS (
-    SELECT 1 FROM pg_indexes 
+    SELECT 1 FROM pg_indexes
     WHERE indexname = 'idx_orders_created_at'
   ) THEN
     CREATE INDEX idx_orders_created_at ON orders(created_at DESC);
@@ -31,4 +31,4 @@ BEGIN
 END $$;
 
 -- Add comment to clarify invoice_id usage
-COMMENT ON COLUMN orders.invoice_id IS 'Stores payment provider reference: WayForPay orderReference or transaction ID';
+COMMENT ON COLUMN orders.invoice_id IS 'Stores payment provider reference: Monobank invoiceId or transaction reference';
