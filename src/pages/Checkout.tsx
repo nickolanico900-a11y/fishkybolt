@@ -154,7 +154,6 @@ export default function Checkout() {
 
         <div className="text-center mb-8">
           <h1 className="text-4xl font-black text-white mb-2">Оформлення замовлення</h1>
-          <p className="text-gray-300">Заповніть форму для участі в розіграші</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -180,10 +179,6 @@ export default function Checkout() {
             </div>
 
             <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
-              <p className="text-sm">
-                Після оплати ви отримаєте на пошту підтвердження з номерами ваших позицій у розіграші.
-                {stickerCount} наклейок = {stickerCount} шансів виграти!
-              </p>
             </div>
           </div>
 
