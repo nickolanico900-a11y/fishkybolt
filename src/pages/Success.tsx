@@ -70,17 +70,7 @@ export default function Success() {
         });
 
         if (order.status === 'completed') {
-          if (!data.positions || data.positions.length === 0) {
-            console.error('Order marked as completed but no positions found');
-            setError('Помилка: замовлення підтверджено, але позиції не знайдено. Зв\'яжіться з підтримкою.');
-            setIsLoading(false);
-            if (pollInterval) {
-              clearInterval(pollInterval);
-            }
-            return;
-          }
-
-          setPositions(data.positions);
+          setPositions(data.positions || []);
           setIsLoading(false);
           if (pollInterval) {
             clearInterval(pollInterval);
@@ -234,8 +224,11 @@ export default function Success() {
             <div>
               <h3 className="font-bold text-gray-800 mb-2">Перевірте вашу пошту</h3>
               <p className="text-gray-600 text-sm">
-                Ми відправили вам підтвердження з деталями замовлення та номерами ваших позицій на {orderData?.email}.
-                Якщо лист не прийшов, перевірте папку "Спам".
+                {positions.length > 0 ? (
+                  <>Ми відправили вам підтвердження з деталями замовлення та номерами ваших позицій на {orderData?.email}. Якщо лист не прийшов, перевірте папку "Спам".</>
+                ) : (
+                  <>Ваше замовлення успішно оплачено! Підтвердження надіслано на {orderData?.email}. Якщо лист не прийшов, перевірте папку "Спам".</>
+                )}
               </p>
             </div>
           </div>

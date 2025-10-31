@@ -70,7 +70,7 @@ Deno.serve(async (req: Request) => {
     });
 
     let positions = [];
-    if (order.status === 'completed') {
+    if (order.status === 'completed' && order.product_to_count) {
       const { data: entries, error: entriesError } = await supabase
         .from('sticker_entries')
         .select('position_number')
@@ -80,7 +80,7 @@ Deno.serve(async (req: Request) => {
       if (entriesError) {
         console.error('Error fetching entries:', entriesError);
       } else if (!entries || entries.length === 0) {
-        console.error('Order marked completed but no entries found:', orderId);
+        console.warn('Order marked completed but no entries found (this might be expected for non-raffle products):', orderId);
       } else {
         positions = entries.map(e => e.position_number);
         console.log('Found positions for completed order:', {
@@ -88,6 +88,8 @@ Deno.serve(async (req: Request) => {
           count: positions.length
         });
       }
+    } else if (order.status === 'completed' && !order.product_to_count) {
+      console.log('Order completed without raffle entries (product_to_count is false):', orderId);
     }
 
     return new Response(
