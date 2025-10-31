@@ -33,13 +33,10 @@ Deno.serve(async (req: Request) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const monobankToken = Deno.env.get('MONOBANK_TOKEN')!;
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const body: InvoiceRequest = await req.json();
-
-    console.log('🧪 TEST MODE: Auto-completing payment without Monobank redirect');
-
-    const testInvoiceId = `TEST-${Date.now()}`;
 
     const { error: orderError } = await supabase
       .from('orders')
@@ -53,11 +50,9 @@ Deno.serve(async (req: Request) => {
         package_quantity: body.stickerCount,
         amount: body.amount / 100,
         currency: 'UAH',
-        status: 'completed',
+        status: 'pending',
         payment_method: 'monobank',
-        product_to_count: body.productToCount,
-        paid_at: new Date().toISOString(),
-        invoice_id: testInvoiceId
+        product_to_count: body.productToCount
       });
 
     if (orderError) {
@@ -71,95 +66,120 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log('Order created with completed status:', body.orderReference);
-
-    if (body.productToCount) {
-      console.log('Creating raffle entries...');
-
-      const entries = [];
-      for (let i = 0; i < body.stickerCount; i++) {
-        entries.push({
-          first_name: body.firstName || 'N/A',
-          last_name: body.lastName || 'N/A',
-          phone: body.customerPhone,
-          email: body.customerEmail,
-          package_name: body.packageName,
-          package_price: body.amount / 100,
-          order_id: body.orderReference,
-          payment_status: 'completed',
-          transaction_number: testInvoiceId
-        });
-      }
-
-      const { data: entriesData, error: entriesError } = await supabase
-        .from('sticker_entries')
-        .insert(entries)
-        .select('position_number');
-
-      if (entriesError) {
-        console.error('Error creating sticker entries:', entriesError);
-      } else {
-        console.log(`Created ${entriesData?.length || 0} raffle entries`);
-
-        console.log('Waiting 2 seconds for database triggers...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        try {
-          const { data: entriesFromDb, error: entriesQueryError } = await supabase
-            .from('sticker_entries')
-            .select('*')
-            .eq('order_id', body.orderReference)
-            .order('position_number', { ascending: true });
-
-          if (entriesQueryError) {
-            console.error('Error fetching entries:', entriesQueryError);
-          } else if (entriesFromDb && entriesFromDb.length > 0) {
-            const positions = entriesFromDb.map(e => e.position_number);
-            const firstEntry = entriesFromDb[0];
-
-            console.log('Sending confirmation email...');
-
-            const emailResponse = await fetch(
-              `${supabaseUrl}/functions/v1/send-confirmation-email`,
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${supabaseServiceKey}`
-                },
-                body: JSON.stringify({
-                  to: firstEntry.email,
-                  firstName: firstEntry.first_name,
-                  lastName: firstEntry.last_name,
-                  packageName: firstEntry.package_name,
-                  packagePrice: firstEntry.package_price,
-                  positions: positions,
-                  orderId: body.orderReference,
-                  transactionNumber: testInvoiceId,
-                  siteUrl: 'https://avtodom-promo.com'
-                })
-              }
-            );
-
-            if (!emailResponse.ok) {
-              console.error('Failed to send email:', await emailResponse.text());
-            } else {
-              console.log('Confirmation email sent');
-            }
+    const monoRequest = {
+      amount: body.amount,
+      ccy: 980,
+      merchantPaymInfo: {
+        reference: body.orderReference,
+        destination: `Оплата за ${body.packageName}`,
+        comment: `Замовлення від ${body.customerName}`,
+        customerEmails: [body.customerEmail],
+        basketOrder: [
+          {
+            name: body.packageName,
+            qty: 1,
+            sum: body.amount,
+            icon: 'string',
+            unit: 'шт',
           }
-        } catch (emailError) {
-          console.error('Error sending email:', emailError);
+        ]
+      },
+      redirectUrl: body.redirectUrl,
+      webHookUrl: body.webHookUrl,
+      validity: 3600,
+      paymentType: 'debit',
+    };
+
+    console.log('Attempting to create Monobank invoice for order:', body.orderReference);
+    console.log('Monobank request data:', JSON.stringify({ ...monoRequest, webHookUrl: '[REDACTED]' }));
+
+    const monoResponse = await fetch('https://api.monobank.ua/api/merchant/invoice/create', {
+      method: 'POST',
+      headers: {
+        'X-Token': monobankToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(monoRequest),
+    });
+
+    console.log('Monobank response status:', monoResponse.status);
+
+    if (!monoResponse.ok) {
+      const errorText = await monoResponse.text();
+      console.error('Monobank API error:', {
+        status: monoResponse.status,
+        statusText: monoResponse.statusText,
+        body: errorText,
+        orderId: body.orderReference
+      });
+
+      await supabase
+        .from('orders')
+        .update({
+          status: 'failed',
+          error_message: `Monobank API error: ${monoResponse.status} - ${errorText}`,
+          updated_at: new Date().toISOString()
+        })
+        .eq('order_id', body.orderReference);
+
+      return new Response(
+        JSON.stringify({
+          error: 'Не вдалося створити рахунок для оплати. Перевірте правильність налаштувань Monobank або спробуйте пізніше.',
+          details: errorText,
+          code: 'MONOBANK_API_ERROR'
+        }),
+        {
+          status: monoResponse.status,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         }
-      }
+      );
     }
 
-    console.log('✅ Test payment completed successfully');
+    const invoiceData = await monoResponse.json();
+    console.log('Monobank invoice created successfully:', {
+      invoiceId: invoiceData.invoiceId,
+      orderId: body.orderReference,
+      hasPageUrl: !!invoiceData.pageUrl
+    });
+
+    if (!invoiceData.pageUrl) {
+      console.error('Monobank response missing pageUrl:', invoiceData);
+
+      await supabase
+        .from('orders')
+        .update({
+          status: 'failed',
+          error_message: 'Monobank не повернув посилання для оплати',
+          updated_at: new Date().toISOString()
+        })
+        .eq('order_id', body.orderReference);
+
+      return new Response(
+        JSON.stringify({
+          error: 'Monobank не повернув посилання для оплати',
+          code: 'MISSING_PAYMENT_URL'
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    await supabase
+      .from('orders')
+      .update({
+        status: 'awaiting_payment',
+        updated_at: new Date().toISOString()
+      })
+      .eq('order_id', body.orderReference);
+
+    console.log('Returning payment URL to client for order:', body.orderReference);
 
     return new Response(
       JSON.stringify({
-        pageUrl: body.redirectUrl,
-        invoiceId: testInvoiceId,
-        testMode: true
+        pageUrl: invoiceData.pageUrl,
+        invoiceId: invoiceData.invoiceId
       }),
       {
         status: 200,
