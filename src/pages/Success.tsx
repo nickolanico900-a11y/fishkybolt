@@ -235,7 +235,6 @@ export default function Success() {
               )}
               {positions.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-white/30">
-                  <p className="text-yellow-200 font-semibold mb-2">Ваші номери для розіграшу:</p>
                   <div className="flex flex-wrap gap-2">
                     {positions.map((pos, idx) => (
                       <span key={idx} className="bg-white/20 px-3 py-1 rounded-full font-bold">
