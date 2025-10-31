@@ -175,7 +175,7 @@ CREATE OR REPLACE FUNCTION reset_position_sequence()
 RETURNS void AS $$
 BEGIN
   UPDATE sticker_entries SET position_number = NULL;
-  ALTER SEQUENCE sticker_position_seq RESTART WITH 1;
+  ALTER SEQUENCE sticker_position_seq RESTART WITH 0;
 END;
 $$ LANGUAGE plpgsql;
 
