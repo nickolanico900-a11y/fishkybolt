@@ -217,26 +217,9 @@ export default function Success() {
             Оплата успішна!
           </h1>
           <p className="text-gray-600 text-lg">
-            Вітаємо! Ви взяли участь в акції з можливістю отримати автомобіль
+            Вітаємо!
           </p>
-        </div>
-
-        <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-4 sm:p-6 mb-8">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">Ваші позиції в акції:</h2>
-          <div className="grid gap-3 max-h-60 overflow-y-auto" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))' }}>
-            {positions.map((pos) => (
-              <div
-                key={pos}
-                className="bg-white rounded-lg py-3 text-center font-bold text-orange-600 border-2 border-orange-200"
-              >
-                {pos}
-              </div>
-            ))}
-          </div>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mt-4">
-            <p className="text-sm text-gray-600">
-              Загальна кількість позицій: <span className="font-bold">{positions.length}</span>
-            </p>
             {orderData?.transactionNumber && (
               <p className="text-sm text-gray-600 break-all">
                 Транзакція: <span className="font-bold text-orange-600">{orderData.transactionNumber}</span>
