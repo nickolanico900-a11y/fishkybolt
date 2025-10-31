@@ -144,7 +144,7 @@ Deno.serve(async (req: Request) => {
 
           <div class="positions">
             <div>Ваші позиції в акції:</div>
-            <div style="margin-top: 10px;">${positions.map(p => `#${p}`).join(', ')}</div>
+            <div style="margin-top: 10px;">${positions.map(p => '#' + p).join(', ')}</div>
           </div>
 
           <p>Дякуємо за участь в акції!</p>
