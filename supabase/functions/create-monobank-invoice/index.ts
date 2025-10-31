@@ -31,19 +31,6 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    console.log('MONOBANK PAYMENT DISABLED FOR TESTING');
-
-    return new Response(
-      JSON.stringify({
-        error: 'Оплата через Monobank тимчасово відключена для тестування',
-        code: 'PAYMENT_DISABLED_FOR_TESTING'
-      }),
-      {
-        status: 503,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
-
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const monobankToken = Deno.env.get('MONOBANK_TOKEN')!;
