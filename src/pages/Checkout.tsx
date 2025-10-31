@@ -262,9 +262,6 @@ export default function Checkout() {
                 {isSubmitting ? 'Обробка...' : 'Перейти до оплати'}
               </button>
 
-              <p className="text-xs text-gray-500 text-center">
-                Натискаючи кнопку, ви приймаєте умови розіграшу та надаєте згоду на обробку персональних даних
-              </p>
             </form>
           </div>
         </div>
