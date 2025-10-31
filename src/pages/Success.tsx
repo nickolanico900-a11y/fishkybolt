@@ -207,16 +207,47 @@ export default function Success() {
             Оплата успішна!
           </h1>
           <p className="text-gray-600 text-lg">
-            Вітаємо!
+            Вітаємо з успішною оплатою!
           </p>
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mt-4">
-            {orderData?.transactionNumber && (
-              <p className="text-sm text-gray-600 break-all">
-                Транзакція: <span className="font-bold text-orange-600">{orderData.transactionNumber}</span>
-              </p>
-            )}
-          </div>
         </div>
+
+        {orderData && (
+          <div className="bg-gradient-to-br from-orange-500 to-red-600 rounded-xl p-6 mb-8 text-white">
+            <h3 className="text-xl font-bold mb-4">Деталі замовлення</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center pb-2 border-b border-white/30">
+                <span className="text-white/90">Товар:</span>
+                <span className="font-semibold text-right">{orderData.packageName}</span>
+              </div>
+              <div className="flex justify-between items-center pb-2 border-b border-white/30">
+                <span className="text-white/90">Кількість:</span>
+                <span className="font-semibold">{orderData.stickerCount}</span>
+              </div>
+              <div className="flex justify-between items-center pb-2 border-b border-white/30">
+                <span className="text-white/90">Сума:</span>
+                <span className="font-bold text-xl">{orderData.packagePrice} грн</span>
+              </div>
+              {orderData.transactionNumber && (
+                <div className="flex justify-between items-center pt-2">
+                  <span className="text-white/90">ID транзакції:</span>
+                  <span className="font-mono text-sm break-all">{orderData.transactionNumber}</span>
+                </div>
+              )}
+              {positions.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-white/30">
+                  <p className="text-yellow-200 font-semibold mb-2">Ваші номери для розіграшу:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {positions.map((pos, idx) => (
+                      <span key={idx} className="bg-white/20 px-3 py-1 rounded-full font-bold">
+                        #{pos}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="bg-blue-50 rounded-xl p-6 mb-8">
           <div className="flex items-start gap-3">
