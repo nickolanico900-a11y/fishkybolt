@@ -130,9 +130,6 @@ export default function Success() {
           </div>
           <h2 className="text-2xl font-bold text-white mb-3">Очікуємо підтвердження оплати</h2>
           <p className="text-gray-300 mb-2">Це може зайняти декілька секунд...</p>
-          <p className="text-gray-400 text-sm mb-4">
-            Після успішної оплати в Monobank ми автоматично зарахуємо вашу участь в розіграші
-          </p>
           {pollingCount > 10 && (
             <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-3 mb-4">
               <p className="text-yellow-200 text-sm">
