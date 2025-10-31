@@ -17,6 +17,6 @@ SECURITY DEFINER
 AS $$
 BEGIN
   -- Reset the sequence to start from 1
-  ALTER SEQUENCE sticker_position_seq RESTART WITH 1;
+  ALTER SEQUENCE sticker_position_seq RESTART WITH 0;
 END;
 $$;
