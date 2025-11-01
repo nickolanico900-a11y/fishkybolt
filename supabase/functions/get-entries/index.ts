@@ -86,11 +86,25 @@ Deno.serve(async (req: Request) => {
       const { error: resetError } = await supabase.rpc('reset_position_sequence');
 
       if (resetError) {
-        console.warn('Could not reset sequence:', resetError);
+        console.error('Could not reset sequence:', resetError);
+        return new Response(
+          JSON.stringify({
+            error: 'Failed to reset position sequence: ' + resetError.message,
+            deletedCount: totalDeleted
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
       }
 
       return new Response(
-        JSON.stringify({ success: true, deletedCount: totalDeleted }),
+        JSON.stringify({
+          success: true,
+          deletedCount: totalDeleted,
+          sequenceReset: true
+        }),
         {
           status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
