@@ -34,16 +34,16 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
+    const { data: entries, error: entriesError } = await supabase
+      .from('sticker_entries')
       .select('*')
       .eq('order_id', orderId)
-      .maybeSingle();
+      .order('position_number', { ascending: true });
 
-    if (orderError) {
-      console.error('Error fetching order:', orderError);
+    if (entriesError) {
+      console.error('Error fetching entries:', entriesError);
       return new Response(
-        JSON.stringify({ error: 'Failed to fetch order' }),
+        JSON.stringify({ error: 'Failed to fetch entries' }),
         {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -51,10 +51,10 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    if (!order) {
-      console.log('Order not found:', orderId);
+    if (!entries || entries.length === 0) {
+      console.log('No entries found for order:', orderId);
       return new Response(
-        JSON.stringify({ error: 'Order not found' }),
+        JSON.stringify({ error: 'Order not found or pending' }),
         {
           status: 404,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -62,50 +62,30 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    console.log('Order found:', {
-      orderId: order.order_id,
-      status: order.status,
-      createdAt: order.created_at,
-      paidAt: order.paid_at
+    const firstEntry = entries[0];
+    const positions = entries.map(e => e.position_number);
+
+    console.log('Entries found:', {
+      orderId,
+      status: firstEntry.payment_status,
+      count: entries.length,
+      positions
     });
-
-    let positions = [];
-    if (order.status === 'completed' && order.product_to_count) {
-      const { data: entries, error: entriesError } = await supabase
-        .from('sticker_entries')
-        .select('position_number')
-        .eq('order_id', orderId)
-        .order('position_number', { ascending: true });
-
-      if (entriesError) {
-        console.error('Error fetching entries:', entriesError);
-      } else if (!entries || entries.length === 0) {
-        console.warn('Order marked completed but no entries found (this might be expected for non-raffle products):', orderId);
-      } else {
-        positions = entries.map(e => e.position_number);
-        console.log('Found positions for completed order:', {
-          orderId,
-          count: positions.length
-        });
-      }
-    } else if (order.status === 'completed' && !order.product_to_count) {
-      console.log('Order completed without raffle entries (product_to_count is false):', orderId);
-    }
 
     return new Response(
       JSON.stringify({
         order: {
-          orderId: order.order_id,
-          status: order.status,
-          firstName: order.first_name || 'N/A',
-          lastName: order.last_name || 'N/A',
-          email: order.customer_email,
-          packageName: order.package_name,
-          packagePrice: order.amount,
-          stickerCount: order.package_quantity,
-          transactionNumber: order.invoice_id,
-          createdAt: order.created_at,
-          paidAt: order.paid_at
+          orderId: orderId,
+          status: firstEntry.payment_status,
+          firstName: firstEntry.first_name,
+          lastName: firstEntry.last_name,
+          email: firstEntry.email,
+          packageName: firstEntry.package_name,
+          packagePrice: firstEntry.package_price,
+          stickerCount: entries.length,
+          transactionNumber: firstEntry.transaction_number,
+          createdAt: firstEntry.created_at,
+          paidAt: firstEntry.created_at
         },
         positions: positions
       }),

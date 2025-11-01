@@ -38,8 +38,8 @@ Deno.serve(async (req: Request) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const body: InvoiceRequest = await req.json();
 
-    const { error: orderError } = await supabase
-      .from('orders')
+    const { error: pendingOrderError } = await supabase
+      .from('pending_orders')
       .insert({
         order_id: body.orderReference,
         first_name: body.firstName,
@@ -49,16 +49,13 @@ Deno.serve(async (req: Request) => {
         package_name: body.packageName,
         package_quantity: body.stickerCount,
         amount: body.amount / 100,
-        currency: 'UAH',
-        status: 'pending',
-        payment_method: 'monobank',
         product_to_count: body.productToCount
       });
 
-    if (orderError) {
-      console.error('Error creating order:', orderError);
+    if (pendingOrderError) {
+      console.error('Error creating pending order:', pendingOrderError);
       return new Response(
-        JSON.stringify({ error: 'Failed to create order', details: orderError.message }),
+        JSON.stringify({ error: 'Failed to create pending order', details: pendingOrderError.message }),
         {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -113,15 +110,6 @@ Deno.serve(async (req: Request) => {
         orderId: body.orderReference
       });
 
-      await supabase
-        .from('orders')
-        .update({
-          status: 'failed',
-          error_message: `Monobank API error: ${monoResponse.status} - ${errorText}`,
-          updated_at: new Date().toISOString()
-        })
-        .eq('order_id', body.orderReference);
-
       return new Response(
         JSON.stringify({
           error: 'Не вдалося створити рахунок для оплати. Перевірте правильність налаштувань Monobank або спробуйте пізніше.',
@@ -145,15 +133,6 @@ Deno.serve(async (req: Request) => {
     if (!invoiceData.pageUrl) {
       console.error('Monobank response missing pageUrl:', invoiceData);
 
-      await supabase
-        .from('orders')
-        .update({
-          status: 'failed',
-          error_message: 'Monobank не повернув посилання для оплати',
-          updated_at: new Date().toISOString()
-        })
-        .eq('order_id', body.orderReference);
-
       return new Response(
         JSON.stringify({
           error: 'Monobank не повернув посилання для оплати',
@@ -165,14 +144,6 @@ Deno.serve(async (req: Request) => {
         }
       );
     }
-
-    await supabase
-      .from('orders')
-      .update({
-        status: 'awaiting_payment',
-        updated_at: new Date().toISOString()
-      })
-      .eq('order_id', body.orderReference);
 
     console.log('Returning payment URL to client for order:', body.orderReference);
 

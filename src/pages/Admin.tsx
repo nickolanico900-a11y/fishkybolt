@@ -243,7 +243,7 @@ export default function Admin() {
       }
 
       const result = await response.json();
-      alert(`✓ База даних успішно очищена!\nВидалено записів: ${result.entriesDeleted}\nВидалено замовлень: ${result.ordersDeleted}\nSequence скинуто: ${result.sequenceReset ? 'Так' : 'Ні'}`);
+      alert(`✓ База даних успішно очищена!\nВидалено записів: ${result.entriesDeleted}\nSequence скинуто: ${result.sequenceReset ? 'Так' : 'Ні'}`);
       await loadSettings();
     } catch (error) {
       console.error('Error clearing database:', error);

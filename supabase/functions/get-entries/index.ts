@@ -36,7 +36,6 @@ Deno.serve(async (req: Request) => {
       }
       
       let totalEntriesDeleted = 0;
-      let totalOrdersDeleted = 0;
       let hasMore = true;
 
       while (hasMore) {
@@ -84,52 +83,6 @@ Deno.serve(async (req: Request) => {
         }
       }
 
-      hasMore = true;
-      while (hasMore) {
-        const { data: batchOrders, error: fetchOrdersError } = await supabase
-          .from('orders')
-          .select('id')
-          .limit(500);
-
-        if (fetchOrdersError) {
-          console.error('Fetch orders error:', fetchOrdersError);
-          return new Response(
-            JSON.stringify({ error: fetchOrdersError.message }),
-            {
-              status: 500,
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            }
-          );
-        }
-
-        if (!batchOrders || batchOrders.length === 0) {
-          hasMore = false;
-          break;
-        }
-
-        const { error: deleteOrdersError } = await supabase
-          .from('orders')
-          .delete()
-          .in('id', batchOrders.map(o => o.id));
-
-        if (deleteOrdersError) {
-          console.error('Delete orders error:', deleteOrdersError);
-          return new Response(
-            JSON.stringify({ error: deleteOrdersError.message }),
-            {
-              status: 500,
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            }
-          );
-        }
-
-        totalOrdersDeleted += batchOrders.length;
-
-        if (batchOrders.length < 500) {
-          hasMore = false;
-        }
-      }
-
       const { error: resetError } = await supabase.rpc('reset_position_sequence');
 
       if (resetError) {
@@ -137,8 +90,7 @@ Deno.serve(async (req: Request) => {
         return new Response(
           JSON.stringify({
             error: 'Failed to reset position sequence: ' + resetError.message,
-            entriesDeleted: totalEntriesDeleted,
-            ordersDeleted: totalOrdersDeleted
+            entriesDeleted: totalEntriesDeleted
           }),
           {
             status: 500,
@@ -151,7 +103,6 @@ Deno.serve(async (req: Request) => {
         JSON.stringify({
           success: true,
           entriesDeleted: totalEntriesDeleted,
-          ordersDeleted: totalOrdersDeleted,
           sequenceReset: true
         }),
         {

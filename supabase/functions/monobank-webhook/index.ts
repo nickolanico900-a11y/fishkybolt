@@ -44,25 +44,18 @@ Deno.serve(async (req: Request) => {
     }
 
     if (webhookData.status === 'success') {
-      const { data: order, error: orderError } = await supabase
-        .from('orders')
-        .select('*')
+      const { data: existingEntries, error: checkError } = await supabase
+        .from('sticker_entries')
+        .select('id')
         .eq('order_id', orderReference)
-        .maybeSingle();
+        .limit(1);
 
-      if (orderError || !order) {
-        console.error('Error fetching order:', orderError);
-        return new Response(
-          JSON.stringify({ error: 'Order not found' }),
-          {
-            status: 404,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          }
-        );
+      if (checkError) {
+        console.error('Error checking existing entries:', checkError);
       }
 
-      if (order.status === 'completed') {
-        console.log('Order already completed (idempotency check):', orderReference);
+      if (existingEntries && existingEntries.length > 0) {
+        console.log('Entries already created (idempotency check):', orderReference);
         return new Response(
           JSON.stringify({ success: true, message: 'Order already processed' }),
           {
@@ -72,43 +65,38 @@ Deno.serve(async (req: Request) => {
         );
       }
 
-      const { error: updateOrderError } = await supabase
-        .from('orders')
-        .update({
-          status: 'completed',
-          paid_at: new Date().toISOString(),
-          invoice_id: invoiceId
-        })
-        .eq('order_id', orderReference);
+      const { data: pendingOrder, error: pendingOrderError } = await supabase
+        .from('pending_orders')
+        .select('*')
+        .eq('order_id', orderReference)
+        .maybeSingle();
 
-      if (updateOrderError) {
-        console.error('Error updating order status:', updateOrderError);
+      if (pendingOrderError || !pendingOrder) {
+        console.error('Error fetching pending order:', pendingOrderError);
         return new Response(
-          JSON.stringify({ error: 'Failed to update order status' }),
+          JSON.stringify({ error: 'Pending order not found' }),
           {
-            status: 500,
+            status: 404,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           }
         );
       }
 
-      console.log('Order status updated to completed:', orderReference);
-
       let insertedEntries = [];
       let positions = [];
 
-      if (order.product_to_count) {
+      if (pendingOrder.product_to_count) {
         console.log('Product counts towards raffle, creating entries...');
 
         const entries = [];
-        for (let i = 0; i < order.package_quantity; i++) {
+        for (let i = 0; i < pendingOrder.package_quantity; i++) {
           entries.push({
-            first_name: order.first_name || 'N/A',
-            last_name: order.last_name || 'N/A',
-            phone: order.customer_phone,
-            email: order.customer_email,
-            package_name: order.package_name,
-            package_price: order.amount,
+            first_name: pendingOrder.first_name,
+            last_name: pendingOrder.last_name,
+            phone: pendingOrder.customer_phone,
+            email: pendingOrder.customer_email,
+            package_name: pendingOrder.package_name,
+            package_price: pendingOrder.amount,
             order_id: orderReference,
             payment_status: 'completed',
             transaction_number: invoiceId
@@ -183,20 +171,20 @@ Deno.serve(async (req: Request) => {
         console.log('Product does not count towards raffle, no entries created');
       }
 
+      await supabase
+        .from('pending_orders')
+        .delete()
+        .eq('order_id', orderReference);
+
       console.log('Payment processed successfully:', {
         orderId: orderReference,
         invoiceId: invoiceId,
-        productToCount: order.product_to_count,
+        productToCount: pendingOrder.product_to_count,
         entriesCreated: insertedEntries.length,
         positions: positions.length > 0 ? positions.sort((a, b) => a - b) : []
       });
     } else if (webhookData.status === 'failure' || webhookData.status === 'cancelled') {
-      await supabase
-        .from('orders')
-        .update({ status: webhookData.status })
-        .eq('order_id', orderReference);
-
-      console.log(`Order ${orderReference} marked as ${webhookData.status}`);
+      console.log(`Payment ${orderReference} marked as ${webhookData.status}`);
     }
 
     return new Response(
