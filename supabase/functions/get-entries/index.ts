@@ -83,6 +83,7 @@ Deno.serve(async (req: Request) => {
         }
       }
 
+      console.log('About to reset sequence...');
       const { error: resetError } = await supabase.rpc('reset_position_sequence');
 
       if (resetError) {
@@ -98,6 +99,8 @@ Deno.serve(async (req: Request) => {
           }
         );
       }
+
+      console.log('Sequence reset successfully!');
 
       return new Response(
         JSON.stringify({
