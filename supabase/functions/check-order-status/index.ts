@@ -52,11 +52,42 @@ Deno.serve(async (req: Request) => {
     }
 
     if (!entries || entries.length === 0) {
-      console.log('No entries found for order:', orderId);
+      console.log('No entries found in sticker_entries, checking pending_orders...');
+
+      const { data: pendingOrder, error: pendingError } = await supabase
+        .from('pending_orders')
+        .select('*')
+        .eq('order_id', orderId)
+        .maybeSingle();
+
+      if (pendingError) {
+        console.error('Error checking pending_orders:', pendingError);
+      }
+
+      if (pendingOrder) {
+        console.log('Order still pending in pending_orders:', orderId);
+        return new Response(
+          JSON.stringify({ error: 'Order not found or pending' }),
+          {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
+      }
+
+      console.log('Order not in sticker_entries or pending_orders - assuming non-raffle product paid successfully:', orderId);
       return new Response(
-        JSON.stringify({ error: 'Order not found or pending' }),
+        JSON.stringify({
+          order: {
+            orderId: orderId,
+            status: 'completed',
+            stickerCount: 0,
+            message: 'Payment successful for non-raffle product'
+          },
+          positions: []
+        }),
         {
-          status: 404,
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         }
       );
