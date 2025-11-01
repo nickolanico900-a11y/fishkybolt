@@ -35,7 +35,8 @@ Deno.serve(async (req: Request) => {
         );
       }
       
-      let totalDeleted = 0;
+      let totalEntriesDeleted = 0;
+      let totalOrdersDeleted = 0;
       let hasMore = true;
 
       while (hasMore) {
@@ -76,9 +77,55 @@ Deno.serve(async (req: Request) => {
           );
         }
 
-        totalDeleted += batchEntries.length;
+        totalEntriesDeleted += batchEntries.length;
 
         if (batchEntries.length < 500) {
+          hasMore = false;
+        }
+      }
+
+      hasMore = true;
+      while (hasMore) {
+        const { data: batchOrders, error: fetchOrdersError } = await supabase
+          .from('orders')
+          .select('id')
+          .limit(500);
+
+        if (fetchOrdersError) {
+          console.error('Fetch orders error:', fetchOrdersError);
+          return new Response(
+            JSON.stringify({ error: fetchOrdersError.message }),
+            {
+              status: 500,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            }
+          );
+        }
+
+        if (!batchOrders || batchOrders.length === 0) {
+          hasMore = false;
+          break;
+        }
+
+        const { error: deleteOrdersError } = await supabase
+          .from('orders')
+          .delete()
+          .in('id', batchOrders.map(o => o.id));
+
+        if (deleteOrdersError) {
+          console.error('Delete orders error:', deleteOrdersError);
+          return new Response(
+            JSON.stringify({ error: deleteOrdersError.message }),
+            {
+              status: 500,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            }
+          );
+        }
+
+        totalOrdersDeleted += batchOrders.length;
+
+        if (batchOrders.length < 500) {
           hasMore = false;
         }
       }
@@ -90,7 +137,8 @@ Deno.serve(async (req: Request) => {
         return new Response(
           JSON.stringify({
             error: 'Failed to reset position sequence: ' + resetError.message,
-            deletedCount: totalDeleted
+            entriesDeleted: totalEntriesDeleted,
+            ordersDeleted: totalOrdersDeleted
           }),
           {
             status: 500,
@@ -102,7 +150,8 @@ Deno.serve(async (req: Request) => {
       return new Response(
         JSON.stringify({
           success: true,
-          deletedCount: totalDeleted,
+          entriesDeleted: totalEntriesDeleted,
+          ordersDeleted: totalOrdersDeleted,
           sequenceReset: true
         }),
         {
