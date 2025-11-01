@@ -71,12 +71,16 @@ Deno.serve(async (req: Request) => {
         .eq('order_id', orderReference)
         .maybeSingle();
 
-      if (pendingOrderError || !pendingOrder) {
+      if (pendingOrderError) {
         console.error('Error fetching pending order:', pendingOrderError);
+      }
+
+      if (!pendingOrder) {
+        console.log('Pending order not found (may be already processed or expired):', orderReference);
         return new Response(
-          JSON.stringify({ error: 'Pending order not found' }),
+          JSON.stringify({ success: true, message: 'Payment received but order data not found' }),
           {
-            status: 404,
+            status: 200,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           }
         );
