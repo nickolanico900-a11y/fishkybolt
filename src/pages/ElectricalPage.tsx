@@ -27,7 +27,8 @@ const products = [
     price: 16800,
     image: 'https://i.ibb.co/1tVfHcTC/7337167-1531384-0s-B0f0-X.jpg',
     description: 'Генератор Hyundai/Kia',
-    uktzed: '8511.50.00.90' // Генератори для двигунів внутрішнього згоряння
+    uktzed: '8511.50.00.90', // Генератори для двигунів внутрішнього згоряння,
+    sku: 'PRODUCT-130'
   },
   {
     id: 4,
