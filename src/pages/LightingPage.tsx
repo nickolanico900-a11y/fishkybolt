@@ -8,37 +8,43 @@ const products = [
     name: 'Лампа галогенна Philips H7',
     price: 378,
     image: 'https://i.ibb.co/pjg3f5jB/2023-30-08-12-32-11-15159010.jpg',
-    description: '12972PRB1 Philips H7 Лампа дальнього світла'
+    description: '12972PRB1 Philips H7 Лампа дальнього світла',
+    uktzed: '8539.22.90.00' // Галогенні лампи для транспортних засобів
   },
   {
     id: 2,
     name: 'Лампа галогенна Philips H4',
     price: 385,
     image: 'https://i.ibb.co/pjzQV0WK/2023-20-02-16-00-07-5355853.jpg',
-    description: 'Лампа галогенна Philips Vision +30% 12В H4 60/55Вт +30%'
+    description: 'Лампа галогенна Philips Vision +30% 12В H4 60/55Вт +30%',
+    uktzed: '8539.22.90.00' // Галогенні лампи для транспортних засобів
   },
   {
     id: 3,
     name: 'Кришка фари',
     price: 860,
     image: 'https://i.ibb.co/0jnF3sjF/2021-26-11-13-01-11-9490152.jpg',
-    description: 'Кришка фари Hyundai/Kia'
+    description: 'Кришка фари Hyundai/Kia',
+    uktzed: '8708.99.97.90' // Частини до освітлювальних приладів автомобіля
   },
   {
     id: 4,
     name: 'Лампа галогенна Osram',
     price: 430,
     image: 'https://i.ibb.co/0yk906ZY/2023-30-08-12-34-42-15159751.jpg',
-    description: 'Лампа галогенна Osram Original 12В H11 55Вт'
+    description: 'Лампа галогенна Osram Original 12В H11 55Вт',
+    uktzed: '8539.22.90.00' // Галогенні лампи для транспортних засобів
   },
   {
     id: 5,
     name: 'Фара протитуманна',
     price: 650,
     image: 'https://i.ibb.co/R4bTDWY7/4709998.jpg',
-    description: 'Фара протитуманна Тип ламп:H11'
+    description: 'Фара протитуманна Тип ламп:H11',
+    uktzed: '8512.20.00.00' // Освітлювальні прилади для транспортних засобів
   }
 ];
+
 
 export default function LightingPage() {
   const contactRef = useRef<HTMLDivElement>(null);
