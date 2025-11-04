@@ -66,6 +66,7 @@ export default function EnginePartsPage() {
     name: string;
     price: number;
     stickers: number;
+    sku: string;
   } | null>(null);
 
   const handleOrder = (product: typeof products[0]) => {
