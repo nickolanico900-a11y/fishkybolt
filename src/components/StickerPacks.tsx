@@ -29,7 +29,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/93n5TsSP/2.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'STICKER-001'
+    sku: 'PRODUCT-001'
   },
   {
     id: 'product-122',
@@ -53,7 +53,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/9kpbcN0P/base3.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'STICKER-002'
+    sku: 'PRODUCT-002'
   },
   {
     id: 'product-3',
@@ -65,7 +65,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/pj1bzCQ6/base4.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'STICKER-003'
+    sku: 'PRODUCT-003'
   },
   {
     id: 'product-4',
@@ -77,7 +77,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/Xfdjh7VV/base5.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'STICKER-004'
+    sku: 'PRODUCT-004'
   },
   {
     id: 'product-5',
@@ -89,7 +89,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/nNw9f5vz/base6.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'STICKER-005'
+    sku: 'PRODUCT-005'
   },
   {
     id: 'product-6',
@@ -101,7 +101,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/8g4nJY5R/base8.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'STICKER-006'
+    sku: 'PRODUCT-006'
   },
   {
     id: 'product-7',
@@ -113,7 +113,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/F44PQ6yn/base9.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'STICKER-007'
+    sku: 'PRODUCT-007'
   },
   {
     id: 'product-8',
@@ -125,7 +125,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/dJ3x8bpK/base10.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'STICKER-008'
+    sku: 'PRODUCT-008'
   },
   {
     id: 'product-9',
@@ -137,7 +137,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/ksMnP6Hg/base11.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'STICKER-009'
+    sku: 'PRODUCT-009'
   },
   {
     id: 'product-91',
@@ -149,7 +149,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/ksMnP6Hg/base11.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'TEST-STICKER-091'
+    sku: 'TEST-PRODUCT-091'
   },
   {
     id: 'product-10',
@@ -161,7 +161,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/jvXm58dk/base12.png',
     isPhysical: true,
     description: '6х7 см наліпка',
-    sku: 'STICKER-010'
+    sku: 'PRODUCT-010'
   }
 ];
 
