@@ -36,7 +36,8 @@ const products = [
     price: 450,
     image: 'https://i.ibb.co/5hJ8tGFm/2022-21-01-22-18-59-9688302.jpg',
     description: 'Реле кондиціонера Бренд: Hella',
-    uktzed: '8536.41.90.00' // Реле для напруги ≤ 60 В
+    uktzed: '8536.41.90.00', // Реле для напруги ≤ 60 В
+    sku: 'PRODUCT-140'
   }
 ];
 
