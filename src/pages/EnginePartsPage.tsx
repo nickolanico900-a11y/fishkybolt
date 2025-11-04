@@ -8,44 +8,51 @@ const products = [
     name: 'Поршень 96350120',
     price: 2500,
     image: 'https://i.ibb.co/7NLNWhk7/7087601-17512889-TD668-Ad.jpg',
-    description: 'Поршень 96350120'
+    description: 'Поршень 96350120',
+    uktzed: '8409.91.00.00' // Частини для поршневих двигунів внутрішнього згоряння
   },
   {
     id: 2,
-    name: 'Ремінь ГРМ 2431226050 ',
+    name: 'Ремінь ГРМ 2431226050',
     price: 3800,
     image: 'https://i.ibb.co/x0HWHSw/6635995-2741823.jpg',
-    description: 'Ремінь ГРМ 2431226050 '
+    description: 'Ремінь ГРМ 2431226050',
+    uktzed: '8483.30.80.00' // Ремені передачі для двигунів
   },
   {
     id: 3,
     name: 'Комплект прокладок двигуна',
     price: 7950,
     image: 'https://i.ibb.co/Y7sCy05z/7100798-11478250-h-C3vi-MW.jpg',
-    description: 'Комплект прокладок 015228001 '
+    description: 'Комплект прокладок 015228001',
+    uktzed: '8484.10.00.00' // Ущільнення та прокладки з металу або гуми
   },
   {
     id: 4,
     name: 'Водяна помпа',
     price: 3200,
     image: 'https://i.ibb.co/SDGD82pR/45-PZf-SXJc.jpg',
-    description: 'Помпа водяна 538008810'
+    description: 'Помпа водяна 538008810',
+    uktzed: '8413.30.80.00' // Насоси для охолоджувальних рідин автомобілів
   },
   {
     id: 5,
     name: '2382 NGK Свічка запалювання',
     price: 180,
     image: 'https://i.ibb.co/8gxrhDBm/7658015-23708687.jpg',
-    description: '2382 NGK Свічка запалювання'
+    description: '2382 NGK Свічка запалювання',
+    uktzed: '8511.10.00.00' // Свічки запалювання
   },
   {
     id: 6,
     name: 'K20TT Denso Свічка запалювання',
     price: 230,
     image: 'https://i.ibb.co/208Pk4zS/2025-01-05-14-31-23-18477071.jpg',
-    description: 'K20TT Denso Свічка запалювання'
+    description: 'K20TT Denso Свічка запалювання',
+    uktzed: '8511.10.00.00' // Свічки запалювання
   }
 ];
+
 
 export default function EnginePartsPage() {
   const contactRef = useRef<HTMLDivElement>(null);
