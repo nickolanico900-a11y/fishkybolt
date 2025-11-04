@@ -20,6 +20,7 @@ interface InvoiceRequest {
   packagePrice: number;
   stickerCount: number;
   productToCount: boolean;
+  sku: string;
 }
 
 Deno.serve(async (req: Request) => {
@@ -76,6 +77,7 @@ Deno.serve(async (req: Request) => {
             name: body.packageName,
             qty: 1,
             sum: body.amount,
+            code: body.sku,
             icon: 'string',
             unit: 'шт',
           }
