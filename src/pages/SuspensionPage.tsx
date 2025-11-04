@@ -19,7 +19,7 @@ const products = [
     image: 'https://i.ibb.co/XZ1grqXd/45-9p-GR5-QB.jpg',
     description: 'Петля капоту лівого 1099LACLH',
     uktzed: '8708.29.90.00', // Частини кузова (кріплення, петлі)
-    sku: 'PRODUCT-510'
+    sku: 'PRODUCT-520'
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const products = [
     image: 'https://i.ibb.co/fVF2sYwp/2024-20-12-21-32-48-17436595.jpg',
     description: 'Пружина підвіски задня RA6147 Бренд: KYB (Kayaba)',
     uktzed: '8708.80.99.00', // Пружини підвіски
-    sku: 'PRODUCT-510'
+    sku: 'PRODUCT-530'
   },
   {
     id: 4,
@@ -37,7 +37,7 @@ const products = [
     image: 'https://i.ibb.co/3mXdxjnt/bmw-f80-m3-buferis.jpg',
     description: 'Бампер BMW F80 M3',
     uktzed: '8708.10.00.10', // Бампери для легкових автомобілів
-    sku: 'PRODUCT-510'
+    sku: 'PRODUCT-540'
   },
   {
     id: 5,
@@ -46,7 +46,7 @@ const products = [
     image: 'https://i.ibb.co/CK3FPkvx/7481864-10233420-Nlq-I5-Ak.jpg',
     description: 'Наконечник рульової тяги CEM49',
     uktzed: '8708.94.20.00', // Частини рульового управління
-    sku: 'PRODUCT-510'
+    sku: 'PRODUCT-550'
   },
   {
     id: 6,
@@ -55,7 +55,7 @@ const products = [
     image: 'https://i.ibb.co/JjRm4Gfx/45-Pz7-YEqn.jpg',
     description: 'Стійка стабілізатора заднього 2677502 Lemforder',
     uktzed: '8708.80.99.00', // Частини підвіски, включно зі стабілізаторами
-    sku: 'PRODUCT-510'
+    sku: 'PRODUCT-560'
   }
 ];
 
