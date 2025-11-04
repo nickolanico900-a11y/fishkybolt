@@ -8,44 +8,51 @@ const products = [
     name: 'C2W001ABE ABE Гальмівні колодки',
     price: 890,
     image: 'https://i.ibb.co/kTdYnrw/7609798-10239076-l-KQch-XR.jpg',
-    description: 'C2W001ABE ABE Гальмівні колодки'
+    description: 'C2W001ABE ABE Гальмівні колодки',
+    uktzed: '8708.30.10.00' // Гальмівні колодки для транспортних засобів
   },
   {
     id: 2,
     name: 'Петля капоту лівого 1099LACLH',
     price: 720,
     image: 'https://i.ibb.co/XZ1grqXd/45-9p-GR5-QB.jpg',
-    description: 'Петля капоту лівого 1099LACLH'
+    description: 'Петля капоту лівого 1099LACLH',
+    uktzed: '8708.29.90.00' // Частини кузова (кріплення, петлі)
   },
   {
     id: 3,
-    name: 'Пружина підвіски задня RA6147 ',
+    name: 'Пружина підвіски задня RA6147',
     price: 2161,
     image: 'https://i.ibb.co/fVF2sYwp/2024-20-12-21-32-48-17436595.jpg',
-    description: 'Пружина підвіски задня RA6147 Бренд: KYB (Kayaba)'
+    description: 'Пружина підвіски задня RA6147 Бренд: KYB (Kayaba)',
+    uktzed: '8708.80.99.00' // Пружини підвіски
   },
   {
     id: 4,
     name: 'Бампер BMW F80 M3',
     price: 12450,
     image: 'https://i.ibb.co/3mXdxjnt/bmw-f80-m3-buferis.jpg',
-    description: 'Бампер BMW F80 M3'
+    description: 'Бампер BMW F80 M3',
+    uktzed: '8708.10.00.10' // Бампери для легкових автомобілів
   },
   {
     id: 5,
     name: 'Наконечник рульової тяги CEM49',
     price: 1800,
     image: 'https://i.ibb.co/CK3FPkvx/7481864-10233420-Nlq-I5-Ak.jpg',
-    description: 'Наконечник рульової тяги CEM49'
+    description: 'Наконечник рульової тяги CEM49',
+    uktzed: '8708.94.20.00' // Частини рульового управління
   },
   {
     id: 6,
     name: 'Стійка стабілізатора заднього',
     price: 1650,
     image: 'https://i.ibb.co/JjRm4Gfx/45-Pz7-YEqn.jpg',
-    description: 'Стійка стабілізатора заднього 2677502 Lemforder'
+    description: 'Стійка стабілізатора заднього 2677502 Lemforder',
+    uktzed: '8708.80.99.00' // Частини підвіски, включно зі стабілізаторами
   }
 ];
+
 
 export default function SuspensionPage() {
   const contactRef = useRef<HTMLDivElement>(null);
