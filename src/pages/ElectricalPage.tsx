@@ -8,30 +8,35 @@ const products = [
     name: 'Круїз-контроль 5K0054690E',
     price: 12500,
     image: 'https://i.ibb.co/pjg3f5jB/2023-30-08-12-32-11-15159010.jpg',
-    description: 'Круїз-контроль 5K0054690E Бренд: VAG'
+    description: 'Круїз-контроль 5K0054690E Бренд: VAG',
+    uktzed: '8708.99.97.90' // Частини та приладдя до систем управління автомобілем
   },
   {
     id: 2,
     name: 'Стартер BN3610022805',
     price: 7200,
     image: 'https://i.ibb.co/MkvpZ6nm/7333530-10530490-FKm-Qxqw.jpg',
-    description: 'Стартер BN3610022805'
+    description: 'Стартер BN3610022805',
+    uktzed: '8511.40.00.90' // Стартери для двигунів внутрішнього згоряння
   },
   {
     id: 3,
     name: 'Генератор 3730022650',
     price: 16800,
     image: 'https://i.ibb.co/1tVfHcTC/7337167-1531384-0s-B0f0-X.jpg',
-    description: 'Генератор Hyundai/Kia'
+    description: 'Генератор Hyundai/Kia',
+    uktzed: '8511.50.00.90' // Генератори для двигунів внутрішнього згоряння
   },
   {
     id: 4,
     name: 'Реле кондиціонера 4RA933332541',
     price: 450,
     image: 'https://i.ibb.co/5hJ8tGFm/2022-21-01-22-18-59-9688302.jpg',
-    description: 'Реле кондиціонера Бренд: Hella'
+    description: 'Реле кондиціонера Бренд: Hella',
+    uktzed: '8536.41.90.00' // Реле для напруги ≤ 60 В
   }
 ];
+
 
 export default function ElectricalPage() {
   const contactRef = useRef<HTMLDivElement>(null);
