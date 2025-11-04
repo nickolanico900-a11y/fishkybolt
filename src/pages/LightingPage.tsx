@@ -10,6 +10,7 @@ const products = [
     image: 'https://i.ibb.co/pjg3f5jB/2023-30-08-12-32-11-15159010.jpg',
     description: '12972PRB1 Philips H7 Лампа дальнього світла',
     uktzed: '8539.22.90.00' // Галогенні лампи для транспортних засобів
+    sku: 'PRODUCT-410'
   },
   {
     id: 2,
@@ -18,6 +19,7 @@ const products = [
     image: 'https://i.ibb.co/pjzQV0WK/2023-20-02-16-00-07-5355853.jpg',
     description: 'Лампа галогенна Philips Vision +30% 12В H4 60/55Вт +30%',
     uktzed: '8539.22.90.00' // Галогенні лампи для транспортних засобів
+    sku: 'PRODUCT-410'
   },
   {
     id: 3,
@@ -26,6 +28,7 @@ const products = [
     image: 'https://i.ibb.co/0jnF3sjF/2021-26-11-13-01-11-9490152.jpg',
     description: 'Кришка фари Hyundai/Kia',
     uktzed: '8708.99.97.90' // Частини до освітлювальних приладів автомобіля
+    sku: 'PRODUCT-410'
   },
   {
     id: 4,
