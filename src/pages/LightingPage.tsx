@@ -64,7 +64,8 @@ export default function LightingPage() {
     setSelectedPackage({
       name: product.name,
       price: product.price,
-      stickers: 1
+      stickers: 1,
+      sku: product.sku
     });
     contactRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
