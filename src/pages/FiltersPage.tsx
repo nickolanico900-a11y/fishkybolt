@@ -19,7 +19,7 @@ const products = [
     image: 'https://i.ibb.co/j9nF4xXf/2022-03-05-23-49-42-13282539.jpg',
     description: 'Корпус паливного фільтру Бренд: febi',
     uktzed: '8421.99.00.00', // Частини до фільтрів
-    sku: 'PRODUCT-310'
+    sku: 'PRODUCT-320'
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const products = [
     image: 'https://i.ibb.co/SwDM2bZk/45-Xe7-RGje.jpg',
     description: 'Фільтр масляний W 811/80 Mann',
     uktzed: '8421.23.00.00', // Фільтри для мастил
-    sku: 'PRODUCT-310'
+    sku: 'PRODUCT-330'
   },
   {
     id: 4,
@@ -37,7 +37,7 @@ const products = [
     image: 'https://i.ibb.co/6cMZ5QZ3/23609177-1.jpg',
     description: 'Elf Evolution Full-Tech FE 5W-30 (1 л) моторна олива',
     uktzed: '2710.19.81.00', // Моторні оливи
-    sku: 'PRODUCT-310'
+    sku: 'PRODUCT-340'
   },
   {
     id: 5,
@@ -46,7 +46,7 @@ const products = [
     image: 'https://i.ibb.co/SXqHmQrZ/6659265-41388643.jpg',
     description: 'Фільтр АКПП',
     uktzed: '8421.23.00.00', // Фільтри для мастил трансмісії
-    sku: 'PRODUCT-310'
+    sku: 'PRODUCT-350'
   },
   {
     id: 6,
@@ -55,7 +55,7 @@ const products = [
     image: 'https://i.ibb.co/mFt6gKty/21996366-1.jpg',
     description: 'General Motors Semi Synthetic 10W-40 (1 л) моторна олива',
     uktzed: '2710.19.81.00', // Моторні оливи
-    sku: 'PRODUCT-310'
+    sku: 'PRODUCT-360'
   },
   {
     id: 7,
@@ -64,7 +64,7 @@ const products = [
     image: 'https://i.ibb.co/4Zh0xrGP/34245428-1.jpg',
     description: 'Standard червоний -24 °C, 0,85 л готовий антифриз',
     uktzed: '3820.00.00.00', // Антифризи та готові рідини для охолодження
-    sku: 'PRODUCT-310'
+    sku: 'PRODUCT-370'
   },
   {
     id: 8,
@@ -73,7 +73,7 @@ const products = [
     image: 'https://i.ibb.co/yF4ydmWF/447890193.webp',
     description: 'VIPOIL Profi 40 G12 червоний -30 °C, 5 л (701403) готовий антифриз',
     uktzed: '3820.00.00.00', // Антифризи та готові рідини для охолодження
-    sku: 'PRODUCT-310'
+    sku: 'PRODUCT-380'
   }
 ];
 
