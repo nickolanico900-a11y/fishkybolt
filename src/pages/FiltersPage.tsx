@@ -8,58 +8,67 @@ const products = [
     name: 'Кришка паливного фільтра',
     price: 4820,
     image: 'https://i.ibb.co/CKYwdZrh/2021-30-04-07-45-53-8783772.jpg',
-    description: 'Кришка фільтра паливного Бренд: Citroen/Peugeot'
+    description: 'Кришка фільтра паливного Бренд: Citroen/Peugeot',
+    uktzed: '8421.99.00.00' // Частини до фільтрів
   },
   {
     id: 2,
     name: 'Корпус паливного фільтру',
     price: 2180,
     image: 'https://i.ibb.co/j9nF4xXf/2022-03-05-23-49-42-13282539.jpg',
-    description: 'Корпус паливного фільтру Бренд: febi'
+    description: 'Корпус паливного фільтру Бренд: febi',
+    uktzed: '8421.99.00.00' // Частини до фільтрів
   },
   {
     id: 3,
     name: 'W 811/80 Mann Оливний фільтр',
     price: 490,
     image: 'https://i.ibb.co/SwDM2bZk/45-Xe7-RGje.jpg',
-    description: 'Фільтр масляний W 811/80 Mann'
+    description: 'Фільтр масляний W 811/80 Mann',
+    uktzed: '8421.23.00.00' // Фільтри для мастил
   },
   {
     id: 4,
     name: 'Elf Evolution Full-Tech FE 5W-30 (1 л) моторна олива',
     price: 680,
     image: 'https://i.ibb.co/6cMZ5QZ3/23609177-1.jpg',
-    description: 'Elf Evolution Full-Tech FE 5W-30 (1 л) моторна олива'
+    description: 'Elf Evolution Full-Tech FE 5W-30 (1 л) моторна олива',
+    uktzed: '2710.19.81.00' // Моторні оливи
   },
   {
     id: 5,
     name: 'Фільтр АКПП',
     price: 2950,
     image: 'https://i.ibb.co/SXqHmQrZ/6659265-41388643.jpg',
-    description: 'Фільтр АКПП'
+    description: 'Фільтр АКПП',
+    uktzed: '8421.23.00.00' // Фільтри для мастил трансмісії
   },
   {
     id: 6,
     name: 'General Motors Semi Synthetic 10W-40 (1 л) моторна олива',
     price: 350,
     image: 'https://i.ibb.co/mFt6gKty/21996366-1.jpg',
-    description: 'General Motors Semi Synthetic 10W-40 (1 л) моторна олива'
+    description: 'General Motors Semi Synthetic 10W-40 (1 л) моторна олива',
+    uktzed: '2710.19.81.00' // Моторні оливи
   },
   {
     id: 7,
     name: 'Standard червоний -24 °C, 0,85 л готовий антифриз',
     price: 135,
     image: 'https://i.ibb.co/4Zh0xrGP/34245428-1.jpg',
-    description: 'Standard червоний -24 °C, 0,85 л готовий антифриз'
+    description: 'Standard червоний -24 °C, 0,85 л готовий антифриз',
+    uktzed: '3820.00.00.00' // Антифризи та готові рідини для охолодження
   },
   {
     id: 8,
     name: 'VIPOIL Profi 40 G12 червоний -30 °C, 5 л (701403) готовий антифриз',
     price: 510,
     image: 'https://i.ibb.co/yF4ydmWF/447890193.webp',
-    description: 'VIPOIL Profi 40 G12 червоний -30 °C, 5 л (701403) готовий антифриз'
+    description: 'VIPOIL Profi 40 G12 червоний -30 °C, 5 л (701403) готовий антифриз',
+    uktzed: '3820.00.00.00' // Антифризи та готові рідини для охолодження
   }
 ];
+
 
 export default function FiltersPage() {
   const contactRef = useRef<HTMLDivElement>(null);
