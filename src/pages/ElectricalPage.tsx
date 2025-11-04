@@ -7,7 +7,7 @@ const products = [
     id: 1,
     name: 'Круїз-контроль 5K0054690E',
     price: 12500,
-    image: 'https://i.ibb.co/pjg3f5jB/2023-30-08-12-32-11-15159010.jpg',
+    image: 'https://i.ibb.co/QF9rJs8n/6569942-24916536-REd-N9-SF.jpg',
     description: 'Круїз-контроль 5K0054690E Бренд: VAG',
     uktzed: '8708.99.97.90' // Частини та приладдя до систем управління автомобілем
   },
