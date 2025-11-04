@@ -57,6 +57,7 @@ export default function LightingPage() {
     name: string;
     price: number;
     stickers: number;
+    sku: string;
   } | null>(null);
 
   const handleOrder = (product: typeof products[0]) => {
