@@ -32,18 +32,6 @@ const packs: StickerPack[] = [
     sku: 'PRODUCT-001'
   },
   {
-    id: 'product-122',
-    name: 'тест продукт',
-    stickers: 1,
-    price: 15,
-    bonus: 0,
-    productToCount: true,
-    carImage: 'https://i.ibb.co/WpFZMtyM/2222.png',
-    isPhysical: true,
-    description: 'тест продукт',
-    sku: 'TEST-PRODUCT-122'
-  },
-  {
     id: 'product-2',
     name: 'Наліпка',
     stickers: 1,
@@ -138,18 +126,6 @@ const packs: StickerPack[] = [
     isPhysical: true,
     description: '6х7 см наліпка',
     sku: 'PRODUCT-009'
-  },
-  {
-    id: 'product-91',
-    name: 'Наліпка тестова 6шт',
-    stickers: 1,
-    price: 15,
-    bonus: 5,
-    productToCount: true,
-    carImage: 'https://i.ibb.co/WpFZMtyM/2222.png',
-    isPhysical: true,
-    description: '6х7 см наліпка',
-    sku: 'TEST-PRODUCT-091'
   },
   {
     id: 'product-10',
