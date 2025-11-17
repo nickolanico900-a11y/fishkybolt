@@ -176,7 +176,7 @@ export default function StickerPacks({ onSelectPackage }: StickerPacksProps) {
             >
               <div className="aspect-square bg-gray-100 overflow-hidden">
                 <img
-                  src={pack.carImage || 'https://i.ibb.co/hJ5c22ps/image.png'}
+                  src={pack.carImage}
                   alt={pack.name}
                   className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                 />
