@@ -64,7 +64,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/WpFZMtyM/2222.png',
     isPhysical: true,
-    description: '6х7 см наліпка',
+    description: '6х7 см наліпки',
     sku: 'PRODUCT-004'
   },
   {
