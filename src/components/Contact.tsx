@@ -106,6 +106,34 @@ export default function Contact({ onOpenPrivacy, onOpenOffer, selectedPackage, o
 
         const stickerCount = selectedPackage.stickers + (selectedPackage.bonus || 0);
         const productToCount = selectedPackage.productToCount || false;
+        const sku = selectedPackage.sku || 'PRODUCT-DEFAULT';
+
+        const entries = [];
+        for (let i = 0; i < stickerCount; i++) {
+          entries.push({
+            first_name: formData.name,
+            last_name: formData.surname,
+            phone: formData.phone,
+            email: formData.email,
+            package_name: selectedPackage.name,
+            package_price: selectedPackage.price,
+            order_id: newOrderId,
+            payment_status: 'completed'
+          });
+        }
+
+        if (productToCount) {
+          entries.push({
+            first_name: formData.name,
+            last_name: formData.surname,
+            phone: formData.phone,
+            email: formData.email,
+            package_name: sku,
+            package_price: selectedPackage.price,
+            order_id: newOrderId,
+            payment_status: 'completed'
+          });
+        }
 
         const response = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-entries`,
@@ -115,18 +143,7 @@ export default function Contact({ onOpenPrivacy, onOpenOffer, selectedPackage, o
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
             },
-            body: JSON.stringify({
-              orderId: newOrderId,
-              firstName: formData.name,
-              lastName: formData.surname,
-              email: formData.email,
-              phone: formData.phone,
-              packageName: selectedPackage.name,
-              packagePrice: selectedPackage.price,
-              stickerCount: stickerCount,
-              productToCount: productToCount,
-              sku: selectedPackage.sku || 'PRODUCT-DEFAULT'
-            })
+            body: JSON.stringify({ entries })
           }
         );
 

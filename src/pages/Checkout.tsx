@@ -59,6 +59,33 @@ export default function Checkout() {
       if (TEST_MODE) {
         console.log('TEST MODE: Skipping payment, creating entries directly');
 
+        const entries = [];
+        for (let i = 0; i < stickerCount; i++) {
+          entries.push({
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            email: formData.email,
+            package_name: packageName,
+            package_price: packagePrice,
+            order_id: orderId,
+            payment_status: 'completed'
+          });
+        }
+
+        if (productToCount) {
+          entries.push({
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            email: formData.email,
+            package_name: sku,
+            package_price: packagePrice,
+            order_id: orderId,
+            payment_status: 'completed'
+          });
+        }
+
         const response = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-entries`,
           {
@@ -67,18 +94,7 @@ export default function Checkout() {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
             },
-            body: JSON.stringify({
-              orderId: orderId,
-              firstName: formData.firstName,
-              lastName: formData.lastName,
-              email: formData.email,
-              phone: formData.phone,
-              packageName: packageName,
-              packagePrice: packagePrice,
-              stickerCount: stickerCount,
-              productToCount: productToCount,
-              sku: sku
-            })
+            body: JSON.stringify({ entries })
           }
         );
 
