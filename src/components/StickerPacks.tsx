@@ -90,6 +90,18 @@ const packs: StickerPack[] = [
     isPhysical: true,
     description: '6х7 см наліпки',
     sku: 'PRODUCT-006'
+  },
+  {
+    id: 'product-test2',
+    name: 'Наліпки 25шт + 1шт безкоштовно! (26шт)216236236',
+    stickers: 25,
+    price: 15,
+    bonus: 1,
+    productToCount: true,
+    carImage: 'https://i.ibb.co/WpFZMtyM/2222.png',
+    isPhysical: true,
+    description: '6х7 см наліпки',
+    sku: 'PRODUCT-007'
   }
 ];
 
