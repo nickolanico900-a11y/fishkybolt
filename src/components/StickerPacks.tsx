@@ -69,7 +69,7 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-5',
-    name: 'Наліпки 25шт + 10шт безкоштовно! (6шт)',
+    name: 'Наліпки 25шт + 10шт безкоштовно! (35шт)',
     stickers: 25,
     price: 2485,
     bonus: 10,
@@ -78,66 +78,6 @@ const packs: StickerPack[] = [
     isPhysical: true,
     description: '6х7 см наліпки',
     sku: 'PRODUCT-005'
-  },
-  {
-    id: 'product-6',
-    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
-    stickers: 1,
-    price: 99,
-    bonus: 0,
-    productToCount: true,
-    carImage: 'https://i.ibb.co/WpFZMtyM/2222.png',
-    isPhysical: true,
-    description: '6х7 см наліпка',
-    sku: 'PRODUCT-006'
-  },
-  {
-    id: 'product-7',
-    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
-    stickers: 1,
-    price: 99,
-    bonus: 0,
-    productToCount: true,
-    carImage: 'https://i.ibb.co/WpFZMtyM/2222.png',
-    isPhysical: true,
-    description: '6х7 см наліпка',
-    sku: 'PRODUCT-007'
-  },
-  {
-    id: 'product-8',
-    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
-    stickers: 1,
-    price: 99,
-    bonus: 0,
-    productToCount: true,
-    carImage: 'https://i.ibb.co/WpFZMtyM/2222.png',
-    isPhysical: true,
-    description: '6х7 см наліпка',
-    sku: 'PRODUCT-008'
-  },
-  {
-    id: 'product-9',
-    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
-    stickers: 1,
-    price: 99,
-    bonus: 5,
-    productToCount: true,
-    carImage: 'https://i.ibb.co/WpFZMtyM/2222.png',
-    isPhysical: true,
-    description: '6х7 см наліпка',
-    sku: 'PRODUCT-009'
-  },
-  {
-    id: 'product-10',
-    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
-    stickers: 1,
-    price: 99,
-    bonus: 2,
-    productToCount: true,
-    carImage: 'https://i.ibb.co/WpFZMtyM/2222.png',
-    isPhysical: true,
-    description: '6х7 см наліпка',
-    sku: 'PRODUCT-010'
   }
 ];
 
