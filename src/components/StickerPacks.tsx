@@ -57,7 +57,7 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-4',
-    name: 'Наліпка',
+    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
     stickers: 1,
     price: 99,
     bonus: 0,
@@ -69,7 +69,7 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-5',
-    name: 'Наліпка',
+    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
     stickers: 1,
     price: 99,
     bonus: 0,
@@ -81,7 +81,7 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-6',
-    name: 'Наліпка',
+    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
     stickers: 1,
     price: 99,
     bonus: 0,
@@ -93,7 +93,7 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-7',
-    name: 'Наліпка',
+    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
     stickers: 1,
     price: 99,
     bonus: 0,
@@ -105,7 +105,7 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-8',
-    name: 'Наліпка',
+    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
     stickers: 1,
     price: 99,
     bonus: 0,
@@ -117,7 +117,7 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-9',
-    name: 'Наліпка',
+    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
     stickers: 1,
     price: 99,
     bonus: 5,
@@ -129,7 +129,7 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-10',
-    name: 'Наліпка',
+    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
     stickers: 1,
     price: 99,
     bonus: 2,
