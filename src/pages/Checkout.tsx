@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ShoppingCart, User, Mail, Phone, ArrowLeft, CreditCard } from 'lucide-react';
+import { TEST_MODE } from '../lib/supabase';
 
 export default function Checkout() {
   const [searchParams] = useSearchParams();
@@ -54,6 +55,48 @@ export default function Checkout() {
         stickerCount,
         orderId
       }));
+
+      if (TEST_MODE) {
+        console.log('TEST MODE: Skipping payment, creating entries directly');
+
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-entries`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({
+              orderId: orderId,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              email: formData.email,
+              phone: formData.phone,
+              packageName: packageName,
+              packagePrice: packagePrice,
+              stickerCount: stickerCount,
+              productToCount: productToCount,
+              sku: sku
+            })
+          }
+        );
+
+        clearInterval(progressInterval);
+        setPaymentProgress(100);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Не вдалося створити записи');
+        }
+
+        const result = await response.json();
+        console.log('TEST MODE: Entries created:', result);
+
+        await new Promise(resolve => setTimeout(resolve, 500));
+        window.location.href = redirectUrl;
+        return;
+      }
 
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-monobank-invoice`,

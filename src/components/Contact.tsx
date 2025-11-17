@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Loader, CheckCircle, ShoppingCart, X, Clock } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, TEST_MODE } from '../lib/supabase';
 
 interface ContactProps {
   onOpenPrivacy: () => void;
@@ -100,6 +100,51 @@ export default function Contact({ onOpenPrivacy, onOpenOffer, selectedPackage, o
       const currentUrl = window.location.origin;
       const redirectUrl = `${currentUrl}/success?orderId=${newOrderId}`;
       const webHookUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/monobank-webhook`;
+
+      if (TEST_MODE) {
+        console.log('TEST MODE: Skipping payment, creating entries directly');
+
+        const stickerCount = selectedPackage.stickers + (selectedPackage.bonus || 0);
+        const productToCount = selectedPackage.productToCount || false;
+
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-entries`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({
+              orderId: newOrderId,
+              firstName: formData.name,
+              lastName: formData.surname,
+              email: formData.email,
+              phone: formData.phone,
+              packageName: selectedPackage.name,
+              packagePrice: selectedPackage.price,
+              stickerCount: stickerCount,
+              productToCount: productToCount,
+              sku: selectedPackage.sku || 'PRODUCT-DEFAULT'
+            })
+          }
+        );
+
+        clearInterval(progressInterval);
+        setPaymentProgress(100);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Не вдалося створити записи');
+        }
+
+        const result = await response.json();
+        console.log('TEST MODE: Entries created:', result);
+
+        await new Promise(resolve => setTimeout(resolve, 500));
+        window.location.href = redirectUrl;
+        return;
+      }
 
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-monobank-invoice`,
