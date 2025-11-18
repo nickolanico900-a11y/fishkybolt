@@ -28,7 +28,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
-    description: '6х7 см наліпка Акційна',
+    description: '6х7 см Наліпка Акційна',
     sku: 'PRODUCT-001'
   },
   {
@@ -40,7 +40,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
-    description: '6х7 см наліпки Акційні',
+    description: '6х7 см Наліпки Акційні',
     sku: 'PRODUCT-002'
   },
   {
@@ -52,7 +52,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
-    description: '6х7 см наліпки Акційні',
+    description: '6х7 см Наліпки Акційні',
     sku: 'PRODUCT-003'
   },
   {
@@ -64,7 +64,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
-    description: '6х7 см наліпки Акційні',
+    description: '6х7 см Наліпки Акційні',
     sku: 'PRODUCT-004'
   },
   {
@@ -76,7 +76,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
-    description: '6х7 см наліпки Акційні',
+    description: '6х7 см Наліпки Акційні',
     sku: 'PRODUCT-005'
   }
 ];
