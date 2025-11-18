@@ -33,50 +33,50 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-2',
-    name: 'Наліпки 5шт + 1шт безкоштовно! (6шт)',
+    name: 'Наліпки Акційні 5шт + 1шт безкоштовно! (6шт)',
     stickers: 5,
     price: 495,
     bonus: 1,
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
-    description: '6х7 см наліпки',
+    description: '6х7 см наліпки Акційні',
     sku: 'PRODUCT-002'
   },
   {
     id: 'product-3',
-    name: 'Наліпки 10шт + 3шт безкоштовно! (13шт)',
+    name: 'Наліпки Акційні 10шт + 3шт безкоштовно! (13шт)',
     stickers: 10,
     price: 990,
     bonus: 3,
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
-    description: '6х7 см наліпки',
+    description: '6х7 см наліпки Акційні',
     sku: 'PRODUCT-003'
   },
   {
     id: 'product-4',
-    name: 'Наліпки 15шт + 5шт безкоштовно! (20шт)',
+    name: 'Наліпки Акційні 15шт + 5шт безкоштовно! (20шт)',
     stickers: 15,
     price: 1485,
     bonus: 5,
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
-    description: '6х7 см наліпки',
+    description: '6х7 см наліпки Акційні',
     sku: 'PRODUCT-004'
   },
   {
     id: 'product-5',
-    name: 'Наліпки 25шт + 10шт безкоштовно! (35шт)',
+    name: 'Наліпки Акційні 25шт + 10шт безкоштовно! (35шт)',
     stickers: 25,
     price: 2475,
     bonus: 10,
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
-    description: '6х7 см наліпки',
+    description: '6х7 см наліпки Акційні',
     sku: 'PRODUCT-005'
   }
 ];
