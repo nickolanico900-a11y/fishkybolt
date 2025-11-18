@@ -21,7 +21,7 @@ interface StickerPack {
 const packs: StickerPack[] = [
   {
     id: 'product-1',
-    name: 'Наліпка Акційна',
+    name: 'Наліпка Акційна (1шт)',
     stickers: 1,
     price: 99,
     bonus: 0,
