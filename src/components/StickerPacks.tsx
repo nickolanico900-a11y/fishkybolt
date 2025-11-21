@@ -45,7 +45,7 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-13',
-    name: 'Наліпки Акційні (1шт)',
+    name: 'Наліпки Акційні (3шт)',
     stickers: 3,
     price: 297,
     bonus: 0,
