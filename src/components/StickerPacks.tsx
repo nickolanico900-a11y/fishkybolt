@@ -41,7 +41,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
     description: '6х7 см Наліпка Акційна',
-    sku: 'PRODUCT-001'
+    sku: 'PRODUCT-0012'
   },
   {
     id: 'product-13',
@@ -53,7 +53,7 @@ const packs: StickerPack[] = [
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
     description: '6х7 см Наліпка Акційна',
-    sku: 'PRODUCT-001'
+    sku: 'PRODUCT-0013'
   },
   {
     id: 'product-2',
