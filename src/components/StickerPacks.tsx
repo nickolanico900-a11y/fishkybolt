@@ -35,7 +35,7 @@ const packs: StickerPack[] = [
     id: 'product-12',
     name: 'Наліпки Акційні (2шт)',
     stickers: 2,
-    price: 190,
+    price: 198,
     bonus: 0,
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
