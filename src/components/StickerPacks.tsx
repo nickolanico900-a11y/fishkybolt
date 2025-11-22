@@ -138,7 +138,12 @@ export default function StickerPacks({ onSelectPackage }: StickerPacksProps) {
               key={pack.id}
               className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
             >
-              <div className="aspect-square bg-gray-100 overflow-hidden">
+              <div className="aspect-square bg-gray-100 overflow-hidden relative">
+                {pack.bonus > 0 && (
+                  <div className="absolute top-2 left-2 bg-gradient-to-r from-orange-500 to-red-600 text-white px-3 py-1 rounded-full text-xs md:text-sm font-bold shadow-lg z-10">
+                    Додатково: +{pack.bonus}
+                  </div>
+                )}
                 <img
                   src={pack.carImage}
                   alt={pack.name}
