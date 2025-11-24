@@ -13,7 +13,7 @@ export default function Owner() {
   const [filterPackage, setFilterPackage] = useState('all');
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
 
-  const ADMIN_PASSWORD = 'avtodom2025';
+  const ADMIN_PASSWORD = 'Qs130794@';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
