@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey',
 };
 
-const ADMIN_PASSWORD = 'avtodom2025';
+const ADMIN_PASSWORD = 'Qs130794@';
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
