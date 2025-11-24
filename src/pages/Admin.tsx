@@ -19,7 +19,7 @@ export default function Admin() {
   const [hoursToAdd, setHoursToAdd] = useState<number>(0);
   const [newDuration, setNewDuration] = useState<number>(21);
 
-  const ADMIN_PASSWORD = 'avtodom2025';
+  const ADMIN_PASSWORD = '3310NorisDom';
 
   useEffect(() => {
     if (isAuthenticated) {
