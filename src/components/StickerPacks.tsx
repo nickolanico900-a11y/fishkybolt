@@ -69,10 +69,10 @@ const packs: StickerPack[] = [
   },
   {
     id: 'product-3',
-    name: 'Наліпки Акційні 10шт + 3шт безкоштовно! (23шт)',
+    name: 'Наліпки Акційні 10шт + 13шт безкоштовно! (23шт)',
     stickers: 10,
-    price: 990,
-    bonus: 3,
+    price: 1990,
+    bonus: 13,
     productToCount: true,
     carImage: 'https://i.ibb.co/GvqNhpMQ/5555.png',
     isPhysical: true,
