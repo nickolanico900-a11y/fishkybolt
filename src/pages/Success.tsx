@@ -76,6 +76,16 @@ export default function Success() {
             clearInterval(pollInterval);
           }
           sessionStorage.removeItem('pendingOrder');
+
+          if (window.fbq) {
+            window.fbq('track', 'Purchase', {
+              content_name: order.packageName,
+              content_type: 'product',
+              value: order.packagePrice,
+              currency: 'UAH',
+              num_items: order.stickerCount
+            });
+          }
         } else if (order.status === 'failed' || order.status === 'cancelled') {
           setError('Оплата не вдалась або була скасована');
           setIsLoading(false);

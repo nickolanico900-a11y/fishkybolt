@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import StickerPacks from '../components/StickerPacks';
 import Contact from '../components/Contact';
 import Countdown from '../components/Countdown';
@@ -12,6 +12,15 @@ export default function StickersPage() {
     productToCount: boolean;
     sku: string;
   } | null>(null);
+
+  useEffect(() => {
+    if (window.fbq) {
+      window.fbq('track', 'ViewContent', {
+        content_name: 'Stickers Promo Page',
+        content_type: 'product_group'
+      });
+    }
+  }, []);
 
   const handleSelectPackage = (pack: { name: string; price: number; stickers: number; productToCount: boolean; sku: string }) => {
     setSelectedPackage(pack);

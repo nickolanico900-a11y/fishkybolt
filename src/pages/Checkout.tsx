@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ShoppingCart, User, Mail, Phone, ArrowLeft, CreditCard } from 'lucide-react';
 import { TEST_MODE } from '../lib/supabase';
@@ -12,6 +12,18 @@ export default function Checkout() {
   const stickerCount = parseInt(searchParams.get('stickers') || '0');
   const productToCount = searchParams.get('productToCount') === 'true';
   const sku = searchParams.get('sku') || 'PRODUCT-DEFAULT';
+
+  useEffect(() => {
+    if (packageName && packagePrice && stickerCount && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', {
+        content_name: packageName,
+        content_type: 'product',
+        value: packagePrice,
+        currency: 'UAH',
+        num_items: stickerCount
+      });
+    }
+  }, [packageName, packagePrice, stickerCount]);
 
   const [formData, setFormData] = useState({
     firstName: '',

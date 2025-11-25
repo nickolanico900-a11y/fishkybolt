@@ -96,6 +96,17 @@ const packs: StickerPack[] = [
 export default function StickerPacks({ onSelectPackage }: StickerPacksProps) {
   const handleBuyClick = (pack: StickerPack) => {
     const totalStickers = pack.stickers + pack.bonus;
+
+    if (window.fbq) {
+      window.fbq('track', 'AddToCart', {
+        content_name: pack.name,
+        content_ids: [pack.sku],
+        content_type: 'product',
+        value: pack.price,
+        currency: 'UAH'
+      });
+    }
+
     onSelectPackage({
       name: pack.name,
       price: pack.price,
