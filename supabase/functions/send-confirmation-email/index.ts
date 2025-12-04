@@ -25,10 +25,19 @@ async function sendEmailViaGmail(
   gmailUser: string,
   gmailPassword: string
 ) {
-  const conn = await Deno.connect({
-    hostname: "smtp.gmail.com",
-    port: 587,
-  });
+  console.log('Starting SMTP connection to Gmail...');
+  
+  let conn;
+  try {
+    conn = await Deno.connect({
+      hostname: "smtp.gmail.com",
+      port: 587,
+    });
+    console.log('Connected to SMTP server');
+  } catch (error) {
+    console.error('Failed to connect to SMTP server:', error);
+    throw new Error(`SMTP connection failed: ${error.message}`);
+  }
 
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
@@ -36,55 +45,94 @@ async function sendEmailViaGmail(
   async function readResponse(): Promise<string> {
     const buffer = new Uint8Array(1024);
     const n = await conn.read(buffer);
-    return decoder.decode(buffer.subarray(0, n || 0));
+    const response = decoder.decode(buffer.subarray(0, n || 0));
+    console.log('SMTP Response:', response.trim());
+    return response;
   }
 
   async function sendCommand(command: string) {
+    console.log('SMTP Command:', command.replace(/AUTH LOGIN|[A-Za-z0-9+/=]{20,}/, '[REDACTED]'));
     await conn.write(encoder.encode(command + "\r\n"));
     return await readResponse();
   }
 
-  await readResponse();
-  await sendCommand("EHLO localhost");
-  await sendCommand("STARTTLS");
+  try {
+    await readResponse();
+    await sendCommand("EHLO localhost");
+    await sendCommand("STARTTLS");
 
-  const tlsConn = await Deno.startTls(conn, { hostname: "smtp.gmail.com" });
+    console.log('Starting TLS...');
+    const tlsConn = await Deno.startTls(conn, { hostname: "smtp.gmail.com" });
+    console.log('TLS established');
 
-  async function tlsReadResponse(): Promise<string> {
-    const buffer = new Uint8Array(1024);
-    const n = await tlsConn.read(buffer);
-    return decoder.decode(buffer.subarray(0, n || 0));
+    async function tlsReadResponse(): Promise<string> {
+      const buffer = new Uint8Array(1024);
+      const n = await tlsConn.read(buffer);
+      const response = decoder.decode(buffer.subarray(0, n || 0));
+      console.log('TLS SMTP Response:', response.trim());
+      return response;
+    }
+
+    async function tlsSendCommand(command: string) {
+      console.log('TLS SMTP Command:', command.replace(/AUTH LOGIN|[A-Za-z0-9+/=]{20,}/, '[REDACTED]'));
+      await tlsConn.write(encoder.encode(command + "\r\n"));
+      return await tlsReadResponse();
+    }
+
+    await tlsSendCommand("EHLO localhost");
+    
+    console.log('Authenticating...');
+    await tlsSendCommand("AUTH LOGIN");
+    const userResp = await tlsSendCommand(btoa(gmailUser));
+    
+    if (userResp.includes('334')) {
+      console.log('Username accepted, sending password...');
+    } else {
+      throw new Error('Username not accepted');
+    }
+    
+    const passResp = await tlsSendCommand(btoa(gmailPassword));
+    
+    if (passResp.includes('235')) {
+      console.log('Authentication successful');
+    } else {
+      throw new Error('Authentication failed');
+    }
+    
+    await tlsSendCommand(`MAIL FROM:<${gmailUser}>`);
+    await tlsSendCommand(`RCPT TO:<${to}>`);
+    await tlsSendCommand("DATA");
+
+    const emailContent = [
+      `From: АвтоДом <${gmailUser}>`,
+      `To: ${to}`,
+      `Subject: ${subject}`,
+      `MIME-Version: 1.0`,
+      `Content-Type: text/html; charset=UTF-8`,
+      `Content-Transfer-Encoding: 8bit`,
+      ``,
+      htmlBody,
+      `.`,
+    ].join("\r\n");
+
+    await tlsSendCommand(emailContent);
+    console.log('Email content sent');
+    
+    await tlsSendCommand("QUIT");
+    console.log('SMTP session closed');
+
+    tlsConn.close();
+  } catch (error) {
+    console.error('SMTP error:', error);
+    if (conn) {
+      try {
+        conn.close();
+      } catch (e) {
+        console.error('Error closing connection:', e);
+      }
+    }
+    throw error;
   }
-
-  async function tlsSendCommand(command: string) {
-    await tlsConn.write(encoder.encode(command + "\r\n"));
-    return await tlsReadResponse();
-  }
-
-  await tlsSendCommand("EHLO localhost");
-  await tlsSendCommand("AUTH LOGIN");
-  await tlsSendCommand(btoa(gmailUser));
-  await tlsSendCommand(btoa(gmailPassword));
-  await tlsSendCommand(`MAIL FROM:<${gmailUser}>`);
-  await tlsSendCommand(`RCPT TO:<${to}>`);
-  await tlsSendCommand("DATA");
-
-  const emailContent = [
-    `From: АвтоДом <${gmailUser}>`,
-    `To: ${to}`,
-    `Subject: ${subject}`,
-    `MIME-Version: 1.0`,
-    `Content-Type: text/html; charset=UTF-8`,
-    `Content-Transfer-Encoding: 8bit`,
-    ``,
-    htmlBody,
-    `.`,
-  ].join("\r\n");
-
-  await tlsSendCommand(emailContent);
-  await tlsSendCommand("QUIT");
-
-  tlsConn.close();
 }
 
 Deno.serve(async (req: Request) => {
@@ -96,7 +144,10 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
+    console.log('Email request received');
     const { to, firstName, lastName, packageName, packagePrice, positions, orderId, transactionNumber, siteUrl }: EmailRequest = await req.json();
+
+    console.log('Email details:', { to, firstName, lastName, packageName, positions: positions.length });
 
     const gmailUser = 'pavlo.bogdan.1307@gmail.com';
     const gmailPassword = 'auve apuy qmjx nyyj';
@@ -158,6 +209,7 @@ Deno.serve(async (req: Request) => {
   </html>
 `;
 
+    console.log('Attempting to send email...');
     await sendEmailViaGmail(
       to,
       'Підтвердження замовлення - АвтоДом Акція',
@@ -165,6 +217,8 @@ Deno.serve(async (req: Request) => {
       gmailUser,
       gmailPassword
     );
+
+    console.log('Email sent successfully to:', to);
 
     return new Response(
       JSON.stringify({
@@ -180,11 +234,13 @@ Deno.serve(async (req: Request) => {
     );
   } catch (error) {
     console.error('Error sending email:', error);
+    console.error('Error stack:', error.stack);
 
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message
+        error: error.message,
+        details: error.stack
       }),
       {
         status: 500,
