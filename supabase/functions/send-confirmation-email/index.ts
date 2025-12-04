@@ -99,7 +99,7 @@ Deno.serve(async (req: Request) => {
     const { to, firstName, lastName, packageName, packagePrice, positions, orderId, transactionNumber, siteUrl }: EmailRequest = await req.json();
 
     const gmailUser = 'pavlo.bogdan.1307@gmail.com';
-    const gmailPassword = 'zdnp vjfv emjw ksem';
+    const gmailPassword = 'auve apuy qmjx nyyj';
 
     const stickerUrl = 'https://avto-domkiev.com/avtodom_sticker.png';
 
