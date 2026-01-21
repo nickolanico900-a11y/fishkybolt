@@ -40,7 +40,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
     isPhysical: true,
-    description: '6х7 см Наліпка Акційна',
+    description: '6х7 см Наліпка Акційна (стандарт)',
     sku: 'PRODUCT-0012'
   },
   {
@@ -52,7 +52,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
     isPhysical: true,
-    description: '6х7 см Наліпка Акційна',
+    description: '6х7 см Наліпка Акційна  (тариф плюс)',
     sku: 'PRODUCT-0013'
   },
   {
@@ -64,7 +64,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
     isPhysical: true,
-    description: '6х7 см Наліпки Акційні',
+    description: '6х7 см Наліпки Акційні (тариф про)',
     sku: 'PRODUCT-002'
   },
   {
@@ -76,7 +76,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
     isPhysical: true,
-    description: '6х7 см Наліпки Акційні',
+    description: '6х7 см Наліпки Акційні (тариф турбо)',
     sku: 'PRODUCT-003'
   },
   {
@@ -88,7 +88,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
     isPhysical: true,
-    description: '6х7 см Наліпки Акційні',
+    description: '6х7 см Наліпки Акційні (тариф гипер)',
     sku: 'PRODUCT-004'
   },
   {
@@ -100,7 +100,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
     isPhysical: true,
-    description: '6х7 см Наліпки Акційні',
+    description: '6х7 см Наліпки Акційні (тариф макс)',
     sku: 'PRODUCT-014'
   }
 ];
