@@ -28,7 +28,7 @@ const packs: StickerPack[] = [
     productToCount: true,
     carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
     isPhysical: true,
-    description: '6х7 см Наліпка Акційна',
+    description: '6х7 см Наліпка Акційна (тариф Лайт)',
     sku: 'PRODUCT-001'
   },
   {
