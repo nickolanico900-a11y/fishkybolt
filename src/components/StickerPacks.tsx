@@ -26,7 +26,7 @@ const packs: StickerPack[] = [
     price: 199,
     bonus: 0,
     productToCount: true,
-    carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
+    carImage: '/12222.png',
     isPhysical: true,
     description: '6х7 см Наліпка Акційна (тариф Лайт)',
     sku: 'PRODUCT-001'
@@ -38,7 +38,7 @@ const packs: StickerPack[] = [
     price: 398,
     bonus: 0,
     productToCount: true,
-    carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
+    carImage: '/12222.png',
     isPhysical: true,
     description: '6х7 см Наліпка Акційна (тариф Стандарт)',
     sku: 'PRODUCT-0012'
@@ -50,7 +50,7 @@ const packs: StickerPack[] = [
     price: 597,
     bonus: 1,
     productToCount: true,
-    carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
+    carImage: '/12222.png',
     isPhysical: true,
     description: '6х7 см Наліпка Акційна  (тариф Плюс)',
     sku: 'PRODUCT-0013'
@@ -62,7 +62,7 @@ const packs: StickerPack[] = [
     price: 995,
     bonus: 2,
     productToCount: true,
-    carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
+    carImage: '/12222.png',
     isPhysical: true,
     description: '6х7 см Наліпки Акційні (тариф Про)',
     sku: 'PRODUCT-002'
@@ -74,7 +74,7 @@ const packs: StickerPack[] = [
     price: 1990,
     bonus: 5,
     productToCount: true,
-    carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
+    carImage: '/12222.png',
     isPhysical: true,
     description: '6х7 см Наліпки Акційні (тариф Турбо)',
     sku: 'PRODUCT-003'
@@ -86,7 +86,7 @@ const packs: StickerPack[] = [
     price: 3980,
     bonus: 13,
     productToCount: true,
-    carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
+    carImage: '/12222.png',
     isPhysical: true,
     description: '6х7 см Наліпки Акційні (тариф Гіпер)',
     sku: 'PRODUCT-004'
@@ -98,7 +98,7 @@ const packs: StickerPack[] = [
     price: 9950,
     bonus: 35,
     productToCount: true,
-    carImage: 'https://i.ibb.co/p6gM1KLR/14-59-06.png',
+    carImage: '/12222.png',
     isPhysical: true,
     description: '6х7 см Наліпки Акційні (тариф Макс)',
     sku: 'PRODUCT-014'
