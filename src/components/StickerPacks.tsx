@@ -158,7 +158,7 @@ export default function StickerPacks({ onSelectPackage }: StickerPacksProps) {
                 <img
                   src={pack.carImage}
                   alt={pack.name}
-                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-300 object-[36%]"
+                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-300 object-[46%]"
                 />
               </div>
               <div className="p-3 md:p-6">
